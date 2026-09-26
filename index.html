@@ -12,6 +12,8 @@
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="color-scheme" content="dark" />
     <meta
       name="description"
       content="VIPER — a precise single-player snake arcade"
@@ -35,9 +37,16 @@
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
       }
+      html {
+        height: 100%;
+        height: 100dvh;
+        height: 100svh;
+        color-scheme: dark;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
       html,
       body {
-        height: 100%;
         background: var(--bg);
         color: var(--ink);
         font:
@@ -48,17 +57,25 @@
         overflow: hidden;
         touch-action: none;
         user-select: none;
+        -webkit-user-select: none;
         overscroll-behavior: none;
       }
       body {
-        min-height: 100dvh;
+        position: relative;
+        height: 100%;
+        height: 100dvh;
+        height: 100svh;
+        max-height: 100dvh;
+        max-height: 100svh;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        padding: calc(10px + env(safe-area-inset-top)) 16px
-          calc(12px + env(safe-area-inset-bottom));
+        gap: 8px;
+        padding: calc(8px + env(safe-area-inset-top, 0px))
+          calc(12px + env(safe-area-inset-right, 0px))
+          calc(8px + env(safe-area-inset-bottom, 0px))
+          calc(12px + env(safe-area-inset-left, 0px));
         background:
           radial-gradient(
             1200px 760px at 50% -10%,
@@ -80,6 +97,7 @@
         justify-content: space-between;
         letter-spacing: 0.16em;
         flex-shrink: 0;
+        max-width: 100%;
       }
       .stat {
         display: flex;
@@ -149,14 +167,50 @@
       }
       #wrap {
         position: relative;
-        width: min(100vw - 32px, 100dvh - 196px, 760px);
+        width: min(
+          100%,
+          calc(
+            100dvh - 140px - env(safe-area-inset-top, 0px) -
+              env(safe-area-inset-bottom, 0px)
+          ),
+          760px
+        );
         aspect-ratio: 1;
         max-width: 100%;
+        max-height: min(
+          100%,
+          calc(
+            100dvh - 140px - env(safe-area-inset-top, 0px) -
+              env(safe-area-inset-bottom, 0px)
+          )
+        );
+        flex: 0 1 auto;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+      }
+      body.touch.run #wrap {
+        width: min(
+          100%,
+          calc(
+            100dvh - 326px - env(safe-area-inset-top, 0px) -
+              env(safe-area-inset-bottom, 0px)
+          ),
+          760px
+        );
+        max-height: min(
+          100%,
+          calc(
+            100dvh - 326px - env(safe-area-inset-top, 0px) -
+              env(safe-area-inset-bottom, 0px)
+          )
+        );
       }
       canvas {
         display: block;
         width: 100%;
         height: 100%;
+        touch-action: none;
         border-radius: 18px;
         box-shadow:
           0 0 0 1px rgba(255, 255, 255, 0.06),
@@ -172,6 +226,9 @@
         justify-content: center;
         text-align: center;
         padding: 22px;
+        overflow: auto;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
         background: var(--panel);
         backdrop-filter: blur(16px) saturate(1.2);
         -webkit-backdrop-filter: blur(16px) saturate(1.2);
@@ -188,8 +245,9 @@
         pointer-events: none;
       }
       h1 {
-        font-size: clamp(36px, 11vw, 68px);
-        letter-spacing: 0.28em;
+        font-size: clamp(24px, 8vw, 68px);
+        letter-spacing: 0.18em;
+        max-width: 100%;
         font-weight: 800;
         margin: 0 0 6px;
         background: linear-gradient(180deg, #fff, #9dffc4);
@@ -290,6 +348,7 @@
         gap: 10px;
         margin-top: 2px;
         flex-shrink: 0;
+        touch-action: manipulation;
       }
       body.touch.run #pad {
         display: grid;
@@ -355,6 +414,9 @@
         letter-spacing: 0.16em;
         text-transform: uppercase;
         min-height: 16px;
+        flex-shrink: 0;
+        text-align: center;
+        max-width: 100%;
       }
       #flash {
         position: fixed;
@@ -375,41 +437,188 @@
         body.run #pad {
           display: grid;
         }
+        body.run #wrap {
+          width: min(
+            100%,
+            calc(
+              100dvh - 326px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            760px
+          );
+          max-height: min(
+            100%,
+            calc(
+              100dvh - 326px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            )
+          );
+        }
       }
-      @media (max-height: 560px) {
+      @media (max-height: 720px) and (orientation: portrait) {
         #sub,
-        #hint,
+        #hint {
+          display: none;
+        }
+        body.touch.run #wrap,
+        body.run #wrap {
+          width: min(
+            100%,
+            calc(
+              100dvh - 268px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            760px
+          );
+          max-height: min(
+            100%,
+            calc(
+              100dvh - 268px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            )
+          );
+        }
+      }
+      @media (max-height: 560px) and (orientation: portrait) {
         #meta {
           display: none;
         }
         h1 {
-          font-size: 32px;
+          font-size: clamp(22px, 9vw, 32px);
         }
-        #wrap {
-          width: min(100vw - 24px, 100dvh - 108px);
+        #pad {
+          grid-template-columns: 46px 46px 46px;
+          grid-template-rows: 46px 46px 46px;
+          gap: 8px;
+        }
+        #pad button {
+          width: 46px;
+          height: 46px;
+        }
+        body.touch.run #wrap,
+        body.run #wrap {
+          width: min(
+            100%,
+            calc(
+              100dvh - 220px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            760px
+          );
+          max-height: min(
+            100%,
+            calc(
+              100dvh - 220px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            )
+          );
         }
       }
-      @media (orientation: landscape) and (max-height: 500px) {
+      @media (orientation: landscape) and (max-height: 720px) {
         body {
           flex-direction: row;
-          flex-wrap: wrap;
-          gap: 8px;
-          padding: 8px 12px;
+          flex-wrap: nowrap;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+          padding: calc(52px + env(safe-area-inset-top, 0px))
+            calc(10px + env(safe-area-inset-right, 0px))
+            calc(6px + env(safe-area-inset-bottom, 0px))
+            calc(10px + env(safe-area-inset-left, 0px));
         }
-        #hud,
+        #hud {
+          position: absolute;
+          top: calc(4px + env(safe-area-inset-top, 0px));
+          left: calc(10px + env(safe-area-inset-left, 0px));
+          right: calc(10px + env(safe-area-inset-right, 0px));
+          width: auto;
+          max-width: none;
+          z-index: 2;
+          pointer-events: none;
+        }
+        #hud #pause {
+          pointer-events: auto;
+        }
         #meta,
-        #hint {
-          width: min(42vw, 320px);
+        #hint,
+        #sub {
+          display: none;
         }
-        #wrap {
-          width: min(100dvh - 24px, 56vw);
-          order: -1;
+        #wrap,
+        body.touch.run #wrap,
+        body.run #wrap {
+          width: min(
+            calc(
+              100svh - 70px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            calc(
+              100vw - 24px - env(safe-area-inset-left, 0px) -
+                env(safe-area-inset-right, 0px)
+            )
+          );
+          max-height: min(
+            calc(
+              100svh - 70px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            calc(
+              100vw - 24px - env(safe-area-inset-left, 0px) -
+                env(safe-area-inset-right, 0px)
+            )
+          );
+          order: 0;
+        }
+        body.touch.run #wrap,
+        body.run #wrap {
+          width: min(
+            calc(
+              100svh - 70px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            calc(
+              100vw - 196px - env(safe-area-inset-left, 0px) -
+                env(safe-area-inset-right, 0px)
+            )
+          );
+          max-height: min(
+            calc(
+              100svh - 70px - env(safe-area-inset-top, 0px) -
+                env(safe-area-inset-bottom, 0px)
+            ),
+            calc(
+              100vw - 196px - env(safe-area-inset-left, 0px) -
+                env(safe-area-inset-right, 0px)
+            )
+          );
         }
         #pad {
           margin: 0;
+          align-self: center;
+          z-index: 2;
+        }
+        #ui {
+          padding: 12px;
+        }
+        h1 {
+          font-size: clamp(20px, 7vh, 40px);
+          letter-spacing: 0.12em;
+        }
+        #msg {
+          font-size: 20px;
+        }
+        #detail {
+          margin-bottom: 10px;
+        }
+        .row {
+          margin-bottom: 8px;
+        }
+        .cta {
+          min-width: 140px;
+          padding: 12px 24px;
         }
       }
-      @media (min-width: 1100px) {
+      @media (min-width: 1100px) and (min-height: 721px) {
         #wrap {
           width: min(100vw - 48px, 100dvh - 200px, 860px);
         }
@@ -931,6 +1140,7 @@
             PAUSE_ICON.innerHTML = ICON_PLAY;
           }
           BTN.focus();
+          resize();
         }
 
         function maybeBest() {
@@ -966,6 +1176,7 @@
           if (state.maxCombo > 1) bits.push("Combo x" + state.maxCombo);
           overlay("over", "Game Over", bits.join(" · "), "Again");
           announce("Game over. Score " + state.score);
+          resize();
         }
 
         function win() {
@@ -989,6 +1200,7 @@
           PAUSE.setAttribute("aria-label", "Pause game");
           PAUSE_ICON.innerHTML = ICON_PAUSE;
           document.body.classList.add("run");
+          resize();
           state.last = performance.now();
           state.acc = 0;
           AudioFx.beep(520, 0.06, "square", 0.04);
@@ -1016,6 +1228,7 @@
           PAUSE.setAttribute("aria-label", "Pause game");
           PAUSE_ICON.innerHTML = ICON_PAUSE;
           document.body.classList.add("run");
+          resize();
           state.last = performance.now();
           try {
             canvas.focus({ preventScroll: true });
@@ -1414,11 +1627,39 @@
         document.addEventListener("pointerdown", onPointerDown, sig);
         document.addEventListener("pointerup", onPointerUp, sig);
         document.addEventListener("pointercancel", onPointerCancel, sig);
+        document.addEventListener(
+          "touchmove",
+          (e) => {
+            if (!(e.target && e.target.closest && e.target.closest("#ui")))
+              e.preventDefault();
+          },
+          { signal: ac.signal, passive: false },
+        );
+        document.addEventListener(
+          "gesturestart",
+          (e) => e.preventDefault(),
+          sig,
+        );
+        document.addEventListener(
+          "contextmenu",
+          (e) => e.preventDefault(),
+          sig,
+        );
         document.addEventListener("visibilitychange", onVisibility, sig);
         window.addEventListener("blur", onBlur, sig);
         window.addEventListener("resize", resize, sig);
+        window.addEventListener(
+          "orientationchange",
+          () => later(resize, 90),
+          sig,
+        );
         if (window.visualViewport)
           visualViewport.addEventListener("resize", resize, sig);
+        if (window.ResizeObserver) {
+          try {
+            new ResizeObserver(resize).observe(canvas.parentElement || canvas);
+          } catch (_) {}
+        }
         const onReduce = (e) => {
           reduced = e.matches;
         };

@@ -22,14 +22,14 @@ VIPER elevates the classic Snake game experience with smooth animations, custom 
 
 ### Controls
 
-| Action | Keyboard | Touch / Mobile |
-| :--- | :--- | :--- |
-| **Move Up** | `Arrow Up` / `W` | Swipe Up / D-Pad Up |
-| **Move Down** | `Arrow Down` / `S` | Swipe Down / D-Pad Down |
-| **Move Left** | `Arrow Left` / `A` | Swipe Left / D-Pad Left |
-| **Move Right** | `Arrow Right` / `D` | Swipe Right / D-Pad Right |
+| Action             | Keyboard              | Touch / Mobile                  |
+| :----------------- | :-------------------- | :------------------------------ |
+| **Move Up**        | `Arrow Up` / `W`      | Swipe Up / D-Pad Up             |
+| **Move Down**      | `Arrow Down` / `S`    | Swipe Down / D-Pad Down         |
+| **Move Left**      | `Arrow Left` / `A`    | Swipe Left / D-Pad Left         |
+| **Move Right**     | `Arrow Right` / `D`   | Swipe Right / D-Pad Right       |
 | **Pause / Resume** | `Space` / `P` / `Esc` | Pause Button / On-Screen Prompt |
-| **Restart** | `R` | On-Screen Button |
+| **Restart**        | `R`                   | On-Screen Button                |
 
 ### Rules & Mechanics
 
@@ -52,7 +52,7 @@ Since VIPER has zero external dependencies or build tools required, running it i
 
    ```
 
-### THEN ###
+### THEN
 
 1. Navigate into the project folder:
 
