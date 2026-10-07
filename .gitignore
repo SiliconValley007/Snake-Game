@@ -1,0 +1,14 @@
+node_modules
+dist
+test-results
+playwright-report
+blob-report
+lighthouse-reports
+.lighthouseci
+coverage
+*.log
+.DS_Store
+.vite
+.cache
+viper.zip
+.monkeycode-tmp-files

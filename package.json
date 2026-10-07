@@ -1,0 +1,31 @@
+{
+  "name": "viper",
+  "private": true,
+  "version": "3.1.2",
+  "type": "module",
+  "description": "VIPER — precision arcade snake",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "icons": "node scripts/generate-icons.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/generate-icons.mjs",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "preview:subpath": "node scripts/preview-subpath.mjs",
+    "prelhci": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "lhci": "lhci autorun"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.14.0",
+    "@playwright/test": "^1.49.1",
+    "jsdom": "^25.0.1",
+    "lighthouse-plugin-pwa": "file:./lighthouse-plugin-pwa",
+    "vite": "^6.0.6",
+    "vitest": "^2.1.8"
+  }
+}
