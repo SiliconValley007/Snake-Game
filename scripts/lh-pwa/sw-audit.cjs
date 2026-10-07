@@ -11,8 +11,13 @@ class PwaServiceWorker extends Audit {
     };
   }
   static async audit(artifacts, context) {
-    const records = await NetworkRecords.request(artifacts.DevtoolsLog, context);
-    const has = records.some((r) => /\/sw\.js(\?|$)/.test(r.url) && r.statusCode < 400);
+    const records = await NetworkRecords.request(
+      artifacts.DevtoolsLog,
+      context,
+    );
+    const has = records.some(
+      (r) => /\/sw\.js(\?|$)/.test(r.url) && r.statusCode < 400,
+    );
     return { score: has ? 1 : 0 };
   }
 }

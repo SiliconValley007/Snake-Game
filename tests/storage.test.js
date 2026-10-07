@@ -8,10 +8,22 @@ import {
   pushBoard,
   boardKey,
 } from "../src/core/storage.js";
-import { STORAGE_KEY, LEGACY_BEST_KEY, LEGACY_SAVE_KEY, STORAGE_VERSION } from "../src/core/constants.js";
+import {
+  STORAGE_KEY,
+  LEGACY_BEST_KEY,
+  LEGACY_SAVE_KEY,
+  STORAGE_VERSION,
+} from "../src/core/constants.js";
 import { createGame, timeTick } from "../src/core/game.js";
 import { MODES } from "../src/core/constants.js";
-import { applyXp, xpForScore, grantAchievement, makeReplay, tickMissions, dailyMissions } from "../src/meta/meta.js";
+import {
+  applyXp,
+  xpForScore,
+  grantAchievement,
+  makeReplay,
+  tickMissions,
+  dailyMissions,
+} from "../src/meta/meta.js";
 import { createAudio } from "../src/audio/audio.js";
 import { createInput } from "../src/input/input.js";
 import { DIRS } from "../src/core/constants.js";
@@ -34,7 +46,10 @@ describe("storage migration", () => {
   });
   it("migrates v1 viper key and legacy best", () => {
     const st = mem();
-    st.setItem(STORAGE_KEY, JSON.stringify({ best: 40, wrap: true, sound: false }));
+    st.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ best: 40, wrap: true, sound: false }),
+    );
     st.setItem(LEGACY_BEST_KEY, "90");
     const s = loadSave(st);
     expect(s.v).toBe(STORAGE_VERSION);
@@ -89,7 +104,8 @@ describe("storage migration", () => {
   });
   it("keeps top 10 leaderboard", () => {
     const d = defaultSave();
-    for (let i = 0; i < 15; i++) pushBoard(d, "classic", "normal", { score: i, at: i, len: 3, combo: 1 });
+    for (let i = 0; i < 15; i++)
+      pushBoard(d, "classic", "normal", { score: i, at: i, len: 3, combo: 1 });
     const list = d.boards[boardKey("classic", "normal")];
     expect(list.length).toBe(10);
     expect(list[0].score).toBe(14);
@@ -173,7 +189,9 @@ describe("gamepad", () => {
       keys: () => ({ up: [], down: [], left: [], right: [], restart: [] }),
       getSwipePx: () => 30,
     });
-    const pressed = Array.from({ length: 16 }, (_, i) => ({ pressed: i === 0 }));
+    const pressed = Array.from({ length: 16 }, (_, i) => ({
+      pressed: i === 0,
+    }));
     Object.defineProperty(globalThis, "navigator", {
       value: { getGamepads: () => [{ axes: [0, 0], buttons: pressed }] },
       configurable: true,
@@ -193,7 +211,9 @@ describe("gamepad", () => {
       keys: () => ({ up: [], down: [], left: [], right: [], restart: [] }),
       getSwipePx: () => 30,
     });
-    const buttons = Array.from({ length: 16 }, (_, i) => ({ pressed: i === 15 }));
+    const buttons = Array.from({ length: 16 }, (_, i) => ({
+      pressed: i === 15,
+    }));
     Object.defineProperty(globalThis, "navigator", {
       value: { getGamepads: () => [{ axes: [0, 0], buttons }] },
       configurable: true,

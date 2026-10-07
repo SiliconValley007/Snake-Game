@@ -56,7 +56,11 @@ body {
     calc(12px + env(safe-area-inset-left, 0px));
   background:
     radial-gradient(1200px 760px at 50% -10%, #173056 0%, transparent 58%),
-    radial-gradient(800px 520px at 80% 110%, rgba(34, 197, 94, 0.08), transparent 50%),
+    radial-gradient(
+      800px 520px at 80% 110%,
+      rgba(34, 197, 94, 0.08),
+      transparent 50%
+    ),
     var(--bg);
 }
 #hud,
@@ -155,14 +159,20 @@ body {
   position: relative;
   width: min(
     100%,
-    calc(100dvh - 140px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
+    calc(
+      100dvh - 140px - env(safe-area-inset-top, 0px) -
+        env(safe-area-inset-bottom, 0px)
+    ),
     760px
   );
   aspect-ratio: 1;
   max-width: 100%;
   max-height: min(
     100%,
-    calc(100dvh - 140px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+    calc(
+      100dvh - 140px - env(safe-area-inset-top, 0px) -
+        env(safe-area-inset-bottom, 0px)
+    )
   );
   flex: 0 1 auto;
   min-width: 0;
@@ -172,12 +182,18 @@ body {
 body.touch.run #wrap {
   width: min(
     100%,
-    calc(100dvh - 326px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
+    calc(
+      100dvh - 326px - env(safe-area-inset-top, 0px) -
+        env(safe-area-inset-bottom, 0px)
+    ),
     760px
   );
   max-height: min(
     100%,
-    calc(100dvh - 326px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+    calc(
+      100dvh - 326px - env(safe-area-inset-top, 0px) -
+        env(safe-area-inset-bottom, 0px)
+    )
   );
 }
 canvas {
@@ -617,12 +633,18 @@ body.touch.run #pad {
   body.run #wrap {
     width: min(
       100%,
-      calc(100dvh - 326px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
+      calc(
+        100dvh - 326px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
       760px
     );
     max-height: min(
       100%,
-      calc(100dvh - 326px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+      calc(
+        100dvh - 326px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      )
     );
   }
 }
@@ -690,12 +712,18 @@ body.touch.run #pad {
   body.run #wrap {
     width: min(
       100%,
-      calc(100dvh - 268px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
+      calc(
+        100dvh - 268px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
       760px
     );
     max-height: min(
       100%,
-      calc(100dvh - 268px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+      calc(
+        100dvh - 268px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      )
     );
   }
 }
@@ -719,12 +747,18 @@ body.touch.run #pad {
   body.run #wrap {
     width: min(
       100%,
-      calc(100dvh - 220px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
+      calc(
+        100dvh - 220px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
       760px
     );
     max-height: min(
       100%,
-      calc(100dvh - 220px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+      calc(
+        100dvh - 220px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      )
     );
   }
 }
@@ -762,24 +796,48 @@ body.touch.run #pad {
   body.touch.run #wrap,
   body.run #wrap {
     width: min(
-      calc(100svh - 70px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
-      calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+      calc(
+        100svh - 70px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
+      calc(
+        100vw - 24px - env(safe-area-inset-left, 0px) -
+          env(safe-area-inset-right, 0px)
+      )
     );
     max-height: min(
-      calc(100svh - 70px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
-      calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+      calc(
+        100svh - 70px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
+      calc(
+        100vw - 24px - env(safe-area-inset-left, 0px) -
+          env(safe-area-inset-right, 0px)
+      )
     );
     order: 0;
   }
   body.touch.run #wrap,
   body.run #wrap {
     width: min(
-      calc(100svh - 70px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
-      calc(100vw - 196px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+      calc(
+        100svh - 70px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
+      calc(
+        100vw - 196px - env(safe-area-inset-left, 0px) -
+          env(safe-area-inset-right, 0px)
+      )
     );
     max-height: min(
-      calc(100svh - 70px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)),
-      calc(100vw - 196px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))
+      calc(
+        100svh - 70px - env(safe-area-inset-top, 0px) -
+          env(safe-area-inset-bottom, 0px)
+      ),
+      calc(
+        100vw - 196px - env(safe-area-inset-left, 0px) -
+          env(safe-area-inset-right, 0px)
+      )
     );
   }
   #pad {

@@ -3,7 +3,13 @@ const { join } = require("node:path");
 module.exports = {
   extends: "lighthouse:default",
   settings: {
-    onlyCategories: ["performance", "accessibility", "best-practices", "seo", "pwa"],
+    onlyCategories: [
+      "performance",
+      "accessibility",
+      "best-practices",
+      "seo",
+      "pwa",
+    ],
   },
   audits: [
     { path: join(__dirname, "scripts/lh-pwa/manifest-audit.cjs") },

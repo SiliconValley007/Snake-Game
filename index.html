@@ -2,17 +2,29 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
     <meta name="theme-color" content="#070b14" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="color-scheme" content="dark" />
-    <meta name="description" content="VIPER — a precise single-player snake arcade" />
+    <meta
+      name="description"
+      content="VIPER — a precise single-player snake arcade"
+    />
     <meta name="application-name" content="VIPER" />
     <meta name="orientation" content="any" />
     <meta property="og:title" content="VIPER" />
-    <meta property="og:description" content="VIPER — a precise single-player snake arcade" />
+    <meta
+      property="og:description"
+      content="VIPER — a precise single-player snake arcade"
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="./" />
     <meta property="og:image" content="./icons/og-card.png" />
@@ -21,11 +33,24 @@
     <meta property="og:image:alt" content="VIPER — precision arcade snake" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="VIPER" />
-    <meta name="twitter:description" content="VIPER — a precise single-player snake arcade" />
+    <meta
+      name="twitter:description"
+      content="VIPER — a precise single-player snake arcade"
+    />
     <meta name="twitter:image" content="./icons/og-card.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="./icons/icon-192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="./icons/icon-512.png"
+    />
     <link rel="apple-touch-icon" href="./icons/icon-192.png" />
     <title>VIPER</title>
     <link rel="stylesheet" href="./src/styles.css" />
@@ -37,10 +62,17 @@
     <div id="live" aria-live="assertive"></div>
     <div id="hud">
       <div class="stat">
-        <span class="lbl">Score</span><span class="val" id="sc" aria-live="polite">0</span>
+        <span class="lbl">Score</span
+        ><span class="val" id="sc" aria-live="polite">0</span>
       </div>
       <button id="pause" type="button" aria-label="Pause game" hidden>
-        <svg id="pauseIcon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <svg
+          id="pauseIcon"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+        >
           <rect x="2" y="1" width="4" height="14" rx="1" fill="currentColor" />
           <rect x="10" y="1" width="4" height="14" rx="1" fill="currentColor" />
         </svg>
@@ -50,10 +82,17 @@
       </div>
     </div>
     <div id="meta">
-      <span id="len">Len 3</span><span id="cmb"></span><span id="spd">Spd 1.0x</span><span id="pwHud" class="powers"></span><span id="msLive"></span>
+      <span id="len">Len 3</span><span id="cmb"></span
+      ><span id="spd">Spd 1.0x</span><span id="pwHud" class="powers"></span
+      ><span id="msLive"></span>
     </div>
     <div id="wrap">
-      <canvas id="c" role="img" aria-label="VIPER game board" tabindex="-1"></canvas>
+      <canvas
+        id="c"
+        role="img"
+        aria-label="VIPER game board"
+        tabindex="-1"
+      ></canvas>
       <div id="ui" role="dialog" aria-modal="true" aria-labelledby="tag msg">
         <div id="tag"></div>
         <h1>VIPER</h1>
@@ -62,7 +101,9 @@
         <div id="detail">Swipe, pad, arrows or WASD</div>
         <div class="row" id="opts"></div>
         <button class="cta" id="btn" type="button">Play</button>
-        <button class="cta" id="restartBtn" type="button" hidden>Restart</button>
+        <button class="cta" id="restartBtn" type="button" hidden>
+          Restart
+        </button>
       </div>
       <div id="panel" hidden></div>
     </div>
@@ -72,12 +113,24 @@
           <path d="M7 2l5 8H2z" fill="currentColor" />
         </svg>
       </button>
-      <button class="l" type="button" data-dx="-1" data-dy="0" aria-label="Left">
+      <button
+        class="l"
+        type="button"
+        data-dx="-1"
+        data-dy="0"
+        aria-label="Left"
+      >
         <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
           <path d="M2 7l8-5v10z" fill="currentColor" />
         </svg>
       </button>
-      <button class="r" type="button" data-dx="1" data-dy="0" aria-label="Right">
+      <button
+        class="r"
+        type="button"
+        data-dx="1"
+        data-dy="0"
+        aria-label="Right"
+      >
         <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
           <path d="M12 7L4 2v10z" fill="currentColor" />
         </svg>
@@ -90,8 +143,14 @@
     </nav>
     <div id="hint">Eat · Grow · Don't crash · Space pause · R restart</div>
     <div id="flash" aria-hidden="true"></div>
-    <div id="toast" role="status"><span id="toastMsg">Update ready</span><button class="chip" type="button" id="toastGo">Reload</button></div>
-    <noscript>Enable JavaScript. Run npm run dev, npm run preview, or open the GitHub Pages URL.</noscript>
+    <div id="toast" role="status">
+      <span id="toastMsg">Update ready</span
+      ><button class="chip" type="button" id="toastGo">Reload</button>
+    </div>
+    <noscript
+      >Enable JavaScript. Run npm run dev, npm run preview, or open the GitHub
+      Pages URL.</noscript
+    >
     <script>
       if (location.protocol === "file:") {
         document.documentElement.innerHTML =

@@ -3,7 +3,10 @@ import { POWER } from "../core/constants.js";
 function envGain(g, ac, peak, dur, t0) {
   g.gain.setValueAtTime(0.0001, t0);
   g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), t0 + 0.012);
-  g.gain.setValueAtTime(Math.max(0.0002, peak), t0 + Math.max(0.02, dur * 0.35));
+  g.gain.setValueAtTime(
+    Math.max(0.0002, peak),
+    t0 + Math.max(0.02, dur * 0.35),
+  );
   g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
 }
 
@@ -58,7 +61,11 @@ export function createAudio() {
         duckGain.connect(master);
         sfxGain.connect(master);
         master.connect(ctx.destination);
-        noiseBuf = ctx.createBuffer(1, (ctx.sampleRate * 0.2) | 0, ctx.sampleRate);
+        noiseBuf = ctx.createBuffer(
+          1,
+          (ctx.sampleRate * 0.2) | 0,
+          ctx.sampleRate,
+        );
         const d = noiseBuf.getChannelData(0);
         for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
       }
@@ -139,7 +146,14 @@ export function createAudio() {
     const ac = ctx || ensure();
     if (!ac) return;
     for (let i = 0; i < freqs.length; i++) {
-      tone(freqs[i], dur, type, (gain || 0.04) / freqs.length, sfxGain, ac.currentTime);
+      tone(
+        freqs[i],
+        dur,
+        type,
+        (gain || 0.04) / freqs.length,
+        sfxGain,
+        ac.currentTime,
+      );
     }
   }
 
@@ -153,12 +167,49 @@ export function createAudio() {
 
   const STING = {
     eat: { duck: 80, notes: [[660, 0.07, "square", 0.05, 0]] },
-    gold: { duck: 110, notes: [[880, 0.08, "triangle", 0.055, 0], [1320, 0.06, "sine", 0.03, 0.02]] },
-    power: { duck: 70, notes: [[400, 0.12, "triangle", 0.045, 0], [600, 0.1, "triangle", 0.03, 0]] },
-    level: { duck: 120, notes: [[440, 0.16, "triangle", 0.03, 0], [554.37, 0.16, "triangle", 0.03, 0], [659.25, 0.16, "triangle", 0.03, 0]] },
-    perk: { duck: 100, notes: [[523.25, 0.1, "sine", 0.04, 0], [659.25, 0.12, "triangle", 0.035, 0.04]] },
-    die: { duck: 0, notes: [[180, 0.28, "sawtooth", 0.045, 0], [90, 0.28, "sawtooth", 0.045, 0]] },
-    win: { duck: 0, notes: [[520, 0.1, "triangle", 0.05, 0], [780, 0.18, "triangle", 0.05, 0.09]] },
+    gold: {
+      duck: 110,
+      notes: [
+        [880, 0.08, "triangle", 0.055, 0],
+        [1320, 0.06, "sine", 0.03, 0.02],
+      ],
+    },
+    power: {
+      duck: 70,
+      notes: [
+        [400, 0.12, "triangle", 0.045, 0],
+        [600, 0.1, "triangle", 0.03, 0],
+      ],
+    },
+    level: {
+      duck: 120,
+      notes: [
+        [440, 0.16, "triangle", 0.03, 0],
+        [554.37, 0.16, "triangle", 0.03, 0],
+        [659.25, 0.16, "triangle", 0.03, 0],
+      ],
+    },
+    perk: {
+      duck: 100,
+      notes: [
+        [523.25, 0.1, "sine", 0.04, 0],
+        [659.25, 0.12, "triangle", 0.035, 0.04],
+      ],
+    },
+    die: {
+      duck: 0,
+      notes: [
+        [180, 0.28, "sawtooth", 0.045, 0],
+        [90, 0.28, "sawtooth", 0.045, 0],
+      ],
+    },
+    win: {
+      duck: 0,
+      notes: [
+        [520, 0.1, "triangle", 0.05, 0],
+        [780, 0.18, "triangle", 0.05, 0.09],
+      ],
+    },
   };
 
   function sting(kind) {
@@ -179,13 +230,34 @@ export function createAudio() {
   function scheduleNote(n, t) {
     const s = n % 16;
     if (s % 4 === 0) {
-      tone(BASS_SEQ[((n / 4) | 0) % BASS_SEQ.length], secondsPerBeat * 0.9, "triangle", 0.05 + intensity * 0.03, stems.bass, t);
+      tone(
+        BASS_SEQ[((n / 4) | 0) % BASS_SEQ.length],
+        secondsPerBeat * 0.9,
+        "triangle",
+        0.05 + intensity * 0.03,
+        stems.bass,
+        t,
+      );
     }
     if (intensity > 0.28 && (s === 2 || s === 6 || s === 10 || s === 14)) {
-      tone(SCALE[(n * 3) % SCALE.length], secondsPerBeat * 0.5, "sine", 0.02 + intensity * 0.02, stems.lead, t);
+      tone(
+        SCALE[(n * 3) % SCALE.length],
+        secondsPerBeat * 0.5,
+        "sine",
+        0.02 + intensity * 0.02,
+        stems.lead,
+        t,
+      );
     }
     if (s === 0 || s === 8) {
-      tone(BASS_SEQ[(((n / 8) | 0) + 2) % BASS_SEQ.length] * 2, secondsPerBeat * 0.8, "sawtooth", 0.012 + intensity * 0.012, stems.lead, t);
+      tone(
+        BASS_SEQ[(((n / 8) | 0) + 2) % BASS_SEQ.length] * 2,
+        secondsPerBeat * 0.8,
+        "sawtooth",
+        0.012 + intensity * 0.012,
+        stems.lead,
+        t,
+      );
     }
     if (intensity > 0.45 && (s === 4 || s === 12)) {
       noiseHit(t, 0.06, 0.02 + intensity * 0.02, stems.perc);
@@ -215,7 +287,8 @@ export function createAudio() {
   }
 
   function tickMusic(dt, speed, combo) {
-    intensity += ((Math.min(1, speed / 2.4 + combo / 14) - intensity) * dt) / 400;
+    intensity +=
+      ((Math.min(1, speed / 2.4 + combo / 14) - intensity) * dt) / 400;
     secondsPerBeat = Math.max(0.28, 0.52 - intensity * 0.18);
     if (stems) {
       stems.lead.gain.value = 0.22 + intensity * 0.85;
@@ -278,15 +351,17 @@ export function createAudio() {
     },
     power(type) {
       sting("power");
-      const f = {
-        [POWER.SLOW]: 320,
-        [POWER.GHOST]: 480,
-        [POWER.MAGNET]: 540,
-        [POWER.X2]: 720,
-        [POWER.SHRINK]: 240,
-      }[type] || 400;
+      const f =
+        {
+          [POWER.SLOW]: 320,
+          [POWER.GHOST]: 480,
+          [POWER.MAGNET]: 540,
+          [POWER.X2]: 720,
+          [POWER.SHRINK]: 240,
+        }[type] || 400;
       const ac = ctx;
-      if (ac && enabled) tone(f * 1.5, 0.1, "triangle", 0.02, sfxGain, ac.currentTime);
+      if (ac && enabled)
+        tone(f * 1.5, 0.1, "triangle", 0.02, sfxGain, ac.currentTime);
     },
     start() {
       beep(520, 0.06, "square", 0.04, 0);

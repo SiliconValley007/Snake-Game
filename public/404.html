@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>VIPER</title>
     <script>
       (function () {
@@ -12,7 +15,9 @@
         var cur = location.pathname || "/";
         if (cur === target || cur === target.slice(0, -1)) return;
         if (parts.length === 1 && cur.charAt(cur.length - 1) === "/") return;
-        location.replace(target + (location.search || "") + (location.hash || ""));
+        location.replace(
+          target + (location.search || "") + (location.hash || ""),
+        );
       })();
     </script>
   </head>

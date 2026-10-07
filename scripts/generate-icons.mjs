@@ -3,7 +3,12 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 
-const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "icons");
+const dir = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "public",
+  "icons",
+);
 mkdirSync(dir, { recursive: true });
 
 function crc32(buf) {
@@ -103,7 +108,13 @@ function ogPaint(x, y, w, h) {
 
 writeFileSync(join(dir, "icon-192.png"), png(192, 192, iconPaint(false)));
 writeFileSync(join(dir, "icon-512.png"), png(512, 512, iconPaint(false)));
-writeFileSync(join(dir, "icon-maskable-192.png"), png(192, 192, iconPaint(true)));
-writeFileSync(join(dir, "icon-maskable-512.png"), png(512, 512, iconPaint(true)));
+writeFileSync(
+  join(dir, "icon-maskable-192.png"),
+  png(192, 192, iconPaint(true)),
+);
+writeFileSync(
+  join(dir, "icon-maskable-512.png"),
+  png(512, 512, iconPaint(true)),
+);
 writeFileSync(join(dir, "og-card.png"), png(1200, 630, ogPaint));
 console.log("icons written");

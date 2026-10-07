@@ -76,7 +76,11 @@ export function evaluateRun(save, state, eventsSeen) {
   if (state.won) add("clear");
   if (state.poisonIgnored >= 10) add("poison-dodge");
   if (state.powersGot && state.powersGot.size >= 5) add("all-powers");
-  if ((state.difficulty === "hard" || state.difficulty === "viper") && state.score >= 200) add("hard-win");
+  if (
+    (state.difficulty === "hard" || state.difficulty === "viper") &&
+    state.score >= 200
+  )
+    add("hard-win");
   if (state.mode === MODES.TIME && state.score >= 200) add("time-200");
   if (save.level >= 5) add("level-5");
   return unlocked;
@@ -87,7 +91,12 @@ export function dailyMissions(date = new Date()) {
   return [
     { id: key + "-eat", desc: "Eat 12 food", target: 12, kind: "eat" },
     { id: key + "-combo", desc: "Hit a 4x combo", target: 4, kind: "combo" },
-    { id: key + "-score", desc: "Score 80 in one run", target: 80, kind: "score" },
+    {
+      id: key + "-score",
+      desc: "Score 80 in one run",
+      target: 80,
+      kind: "score",
+    },
   ];
 }
 
@@ -119,13 +128,19 @@ export function tickMissions(save, state) {
   const list = dailyMissions();
   if (!save.missions) save.missions = {};
   for (const m of list) {
-    const cur = save.missions[m.id] || { progress: 0, done: false, claimed: false };
+    const cur = save.missions[m.id] || {
+      progress: 0,
+      done: false,
+      claimed: false,
+    };
     if (cur.done) {
       save.missions[m.id] = cur;
       continue;
     }
-    if (m.kind === "eat") cur.progress = Math.max(cur.progress, state.foodsEaten || 0);
-    if (m.kind === "combo") cur.progress = Math.max(cur.progress, state.maxCombo);
+    if (m.kind === "eat")
+      cur.progress = Math.max(cur.progress, state.foodsEaten || 0);
+    if (m.kind === "combo")
+      cur.progress = Math.max(cur.progress, state.maxCombo);
     if (m.kind === "score") cur.progress = Math.max(cur.progress, state.score);
     if (cur.progress >= m.target) cur.done = true;
     save.missions[m.id] = cur;
@@ -172,7 +187,11 @@ export async function shareCard(canvas, score, mode) {
   const file = new File([blob], "viper.png", { type: "image/png" });
   const text = `VIPER ${mode} — ${score}`;
   try {
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare({ files: [file] })
+    ) {
       await navigator.share({ files: [file], title: "VIPER", text });
       return true;
     }

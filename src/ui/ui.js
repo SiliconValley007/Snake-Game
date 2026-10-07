@@ -1,4 +1,14 @@
-import { MODE_LIST, DIFF_LIST, SKINS, TRAILS, THEMES, ACHIEVEMENTS, MODES, PERKS, META_UPGRADES } from "../core/constants.js";
+import {
+  MODE_LIST,
+  DIFF_LIST,
+  SKINS,
+  TRAILS,
+  THEMES,
+  ACHIEVEMENTS,
+  MODES,
+  PERKS,
+  META_UPGRADES,
+} from "../core/constants.js";
 import { dailyMissions } from "../meta/meta.js";
 import { getMap, allMaps } from "../core/maps.js";
 
@@ -9,7 +19,12 @@ const MODE_LABEL = {
   daily: "Daily",
   zen: "Zen",
 };
-const DIFF_LABEL = { easy: "Easy", normal: "Normal", hard: "Hard", viper: "Viper" };
+const DIFF_LABEL = {
+  easy: "Easy",
+  normal: "Normal",
+  hard: "Hard",
+  viper: "Viper",
+};
 
 export function el(id) {
   return document.getElementById(id);
@@ -34,8 +49,8 @@ export function buildMenu(root, save, handlers) {
     '<div class="row" id="mapRow"></div>' +
     '<div class="row" id="perkRow"></div>' +
     '<div class="row" id="optRow"></div>' +
-     '<div class="row extra" id="navRow"></div>' +
-     '<div class="msHud" id="msHud"></div>';
+    '<div class="row extra" id="navRow"></div>' +
+    '<div class="msHud" id="msHud"></div>';
   root.appendChild(wrap);
 
   function chips(row, items, cur, onPick, lab) {
@@ -47,7 +62,9 @@ export function buildMenu(root, save, handlers) {
       b.textContent = lab(it);
       b.dataset.id = typeof it === "string" ? it : it.id;
       setChip(b, (typeof it === "string" ? it : it.id) === cur);
-      b.addEventListener("click", () => onPick(typeof it === "string" ? it : it.id));
+      b.addEventListener("click", () =>
+        onPick(typeof it === "string" ? it : it.id),
+      );
       row.appendChild(b);
     }
   }
@@ -60,9 +77,16 @@ export function buildMenu(root, save, handlers) {
   const navRow = wrap.querySelector("#navRow");
 
   chips(modeRow, MODE_LIST, save.mode, handlers.onMode, (m) => MODE_LABEL[m]);
-  chips(diffRow, DIFF_LIST, save.difficulty, handlers.onDiff, (d) => DIFF_LABEL[d]);
+  chips(
+    diffRow,
+    DIFF_LIST,
+    save.difficulty,
+    handlers.onDiff,
+    (d) => DIFF_LABEL[d],
+  );
   chips(mapRow, allMaps(), save.mapId, handlers.onMap, (m) => m.name);
-  if (handlers.onPerk) chips(perkRow, PERKS, save.perk || "none", handlers.onPerk, (p) => p.name);
+  if (handlers.onPerk)
+    chips(perkRow, PERKS, save.perk || "none", handlers.onPerk, (p) => p.name);
   paintMissions(wrap.querySelector("#msHud"), save);
 
   const wrapBtn = document.createElement("button");
@@ -104,13 +128,27 @@ export function paintMissions(node, save) {
   if (!node) return;
   const list = dailyMissions();
   const bits = list.map((m) => {
-    const c = (save.missions && save.missions[m.id]) || { progress: 0, done: false, claimed: false };
-    return m.desc.split(" ")[0] + " " + Math.min(c.progress, m.target) + "/" + m.target + (c.done ? (c.claimed ? " ok" : " !") : "");
+    const c = (save.missions && save.missions[m.id]) || {
+      progress: 0,
+      done: false,
+      claimed: false,
+    };
+    return (
+      m.desc.split(" ")[0] +
+      " " +
+      Math.min(c.progress, m.target) +
+      "/" +
+      m.target +
+      (c.done ? (c.claimed ? " ok" : " !") : "")
+    );
   });
   node.textContent = "Streak " + (save.streak || 0) + " · " + bits.join(" · ");
 }
 
-export function overlayState(ui, { mode, title, detail, cta, showOpts, showRestart, score }) {
+export function overlayState(
+  ui,
+  { mode, title, detail, cta, showOpts, showRestart, score },
+) {
   const TAG = el("tag");
   const MSG = el("msg");
   const DET = el("detail");
@@ -197,12 +235,30 @@ export function settingsHtml(save) {
       '"></label>' +
       '<label>Colorblind <select id="cbSel">' +
       ["none", "deuteranopia", "protanopia", "tritanopia"]
-        .map((c) => '<option value="' + c + '"' + (save.colorblind === c ? " selected" : "") + ">" + c + "</option>")
+        .map(
+          (c) =>
+            '<option value="' +
+            c +
+            '"' +
+            (save.colorblind === c ? " selected" : "") +
+            ">" +
+            c +
+            "</option>",
+        )
         .join("") +
       "</select></label>" +
       '<label>Quality <select id="qualSel">' +
       ["auto", "high", "med", "low"]
-        .map((c) => '<option value="' + c + '"' + ((save.quality || "auto") === c ? " selected" : "") + ">" + c + "</option>")
+        .map(
+          (c) =>
+            '<option value="' +
+            c +
+            '"' +
+            ((save.quality || "auto") === c ? " selected" : "") +
+            ">" +
+            c +
+            "</option>",
+        )
         .join("") +
       "</select></label>" +
       '<label>Left-handed pad <input id="leftPadCk" type="checkbox" ' +
@@ -273,16 +329,31 @@ export function garageHtml(save) {
 
 export function boardHtml(save, mode, diff) {
   const k = mode + ":" + diff;
-  const list = (save.boards[k] || []).map((e, i) => "<li>" + (i + 1) + ". " + e.score + " · len " + e.len + "</li>").join("") || "<li>Empty</li>";
-  const daily = Object.keys(save.daily || {})
-    .sort()
-    .reverse()
-    .slice(0, 10)
-    .map((d) => "<li>" + d + " — " + save.daily[d].score + "</li>")
-    .join("") || "<li>Empty</li>";
+  const list =
+    (save.boards[k] || [])
+      .map(
+        (e, i) =>
+          "<li>" + (i + 1) + ". " + e.score + " · len " + e.len + "</li>",
+      )
+      .join("") || "<li>Empty</li>";
+  const daily =
+    Object.keys(save.daily || {})
+      .sort()
+      .reverse()
+      .slice(0, 10)
+      .map((d) => "<li>" + d + " — " + save.daily[d].score + "</li>")
+      .join("") || "<li>Empty</li>";
   return panelShell(
     "Scores",
-    "<p>" + mode + " / " + diff + "</p><ol>" + list + "</ol><h3>Daily</h3><ol>" + daily + "</ol>",
+    "<p>" +
+      mode +
+      " / " +
+      diff +
+      "</p><ol>" +
+      list +
+      "</ol><h3>Daily</h3><ol>" +
+      daily +
+      "</ol>",
   );
 }
 
@@ -298,16 +369,41 @@ export function achHtml(save) {
   ).join("");
   const miss = dailyMissions()
     .map((m) => {
-      const c = (save.missions && save.missions[m.id]) || { progress: 0, done: false, claimed: false };
-      const btn = c.done && !c.claimed
-        ? ' <button class="chip" type="button" data-claim="' + m.id + '">Claim</button>'
-        : c.claimed ? " claimed" : "";
-      return "<li>" + m.desc + " (" + Math.min(c.progress, m.target) + "/" + m.target + ")" + btn + "</li>";
+      const c = (save.missions && save.missions[m.id]) || {
+        progress: 0,
+        done: false,
+        claimed: false,
+      };
+      const btn =
+        c.done && !c.claimed
+          ? ' <button class="chip" type="button" data-claim="' +
+            m.id +
+            '">Claim</button>'
+          : c.claimed
+            ? " claimed"
+            : "";
+      return (
+        "<li>" +
+        m.desc +
+        " (" +
+        Math.min(c.progress, m.target) +
+        "/" +
+        m.target +
+        ")" +
+        btn +
+        "</li>"
+      );
     })
     .join("");
   return panelShell(
     "Medals",
-    "<p>Daily streak " + (save.streak || 0) + "</p><ul>" + items + "</ul><h3>Missions</h3><ul>" + miss + "</ul>",
+    "<p>Daily streak " +
+      (save.streak || 0) +
+      "</p><ul>" +
+      items +
+      "</ul><h3>Missions</h3><ul>" +
+      miss +
+      "</ul>",
   );
 }
 
@@ -332,19 +428,25 @@ export function treeHtml(save) {
       "</button>"
     );
   }).join("");
-  return panelShell("Upgrade tree", "<p>XP " + save.xp + "</p><div class='row'>" + rows + "</div>");
+  return panelShell(
+    "Upgrade tree",
+    "<p>XP " + save.xp + "</p><div class='row'>" + rows + "</div>",
+  );
 }
 
 export function mapsHtml(save) {
-  const custom = (save.customMaps || [])
-    .map((m) => '<li>' + m.name + " (" + m.cols + "x" + m.rows + ")</li>")
-    .join("") || "<li>None</li>";
+  const custom =
+    (save.customMaps || [])
+      .map((m) => "<li>" + m.name + " (" + m.cols + "x" + m.rows + ")</li>")
+      .join("") || "<li>None</li>";
   return panelShell(
     "Maps",
     "<p>Seeded procedural maps and a local editor.</p>" +
       '<label>Seed <input id="procSeed" type="text" value="" placeholder="optional"></label>' +
       '<div class="row"><button class="chip" type="button" id="procBtn">Generate</button></div>' +
-      "<h3>Saved</h3><ul>" + custom + "</ul>" +
+      "<h3>Saved</h3><ul>" +
+      custom +
+      "</ul>" +
       '<canvas id="edCanvas" width="240" height="240"></canvas>' +
       '<div class="row"><button class="chip" type="button" id="edSave">Save map</button>' +
       '<button class="chip" type="button" id="edExport">Export</button>' +

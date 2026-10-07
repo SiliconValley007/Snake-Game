@@ -5,12 +5,18 @@ export function registerSW(onUpdate) {
     navigator.serviceWorker
       .register(url.href, { scope: "./" })
       .then((reg) => {
-        if (reg.waiting && navigator.serviceWorker.controller && onUpdate) onUpdate(reg);
+        if (reg.waiting && navigator.serviceWorker.controller && onUpdate)
+          onUpdate(reg);
         reg.addEventListener("updatefound", () => {
           const w = reg.installing;
           if (!w) return;
           w.addEventListener("statechange", () => {
-            if (w.state === "installed" && navigator.serviceWorker.controller && onUpdate) onUpdate(reg);
+            if (
+              w.state === "installed" &&
+              navigator.serviceWorker.controller &&
+              onUpdate
+            )
+              onUpdate(reg);
           });
         });
       })

@@ -2,7 +2,10 @@ import { FOOD, POWER, THEMES, SKINS, COLORBLIND } from "../core/constants.js";
 import { catmull, buildChain, chainMaxGap } from "./interp.js";
 
 function makeCache(w, h) {
-  const c = typeof OffscreenCanvas === "function" ? new OffscreenCanvas(w, h) : document.createElement("canvas");
+  const c =
+    typeof OffscreenCanvas === "function"
+      ? new OffscreenCanvas(w, h)
+      : document.createElement("canvas");
   c.width = w;
   c.height = h;
   return c;
@@ -57,7 +60,14 @@ export function createRenderer(canvas) {
   }
 
   function setQuality(q) {
-    quality = q === "low" ? "low" : q === "med" ? "med" : q === "auto" ? "auto" : "high";
+    quality =
+      q === "low"
+        ? "low"
+        : q === "med"
+          ? "med"
+          : q === "auto"
+            ? "auto"
+            : "high";
     autoGlow = 2;
   }
 
@@ -157,7 +167,14 @@ export function createRenderer(canvas) {
     gc.stroke();
     const vc = vigCache.getContext("2d");
     vc.clearRect(0, 0, W, W);
-    const vg = vc.createRadialGradient(W / 2, W / 2, W * 0.28, W / 2, W / 2, W * 0.72);
+    const vg = vc.createRadialGradient(
+      W / 2,
+      W / 2,
+      W * 0.28,
+      W / 2,
+      W / 2,
+      W * 0.72,
+    );
     vg.addColorStop(0, "rgba(0,0,0,0)");
     vg.addColorStop(1, "rgba(0,0,0,.32)");
     vc.fillStyle = vg;
@@ -261,7 +278,14 @@ export function createRenderer(canvas) {
     if (reduced) return;
     n = Math.min(n, 28);
     for (let i = 0; i < n; i++) {
-      const p = partPool.pop() || { gx: 0, gy: 0, vx: 0, vy: 0, life: 0, col: "" };
+      const p = partPool.pop() || {
+        gx: 0,
+        gy: 0,
+        vx: 0,
+        vy: 0,
+        life: 0,
+        col: "",
+      };
       const ang = (Math.PI * 2 * i) / n + (Math.random() - 0.5) * 0.4;
       const sp = 1.1 + Math.random() * 2.6;
       p.gx = gx;
@@ -301,8 +325,18 @@ export function createRenderer(canvas) {
         flashCol = e.gold ? "#fbbf24" : "#22c55e";
         punch = 1;
         squash = 1.35;
-        addFloat(e.x + 0.5, e.y + 0.2, "+" + e.add, e.gold ? "#fde68a" : "#7dffb0");
-        burst(e.x + 0.5, e.y + 0.5, e.gold ? "#fbbf24" : "#7dffb0", e.gold ? 10 : 8);
+        addFloat(
+          e.x + 0.5,
+          e.y + 0.2,
+          "+" + e.add,
+          e.gold ? "#fde68a" : "#7dffb0",
+        );
+        burst(
+          e.x + 0.5,
+          e.y + 0.5,
+          e.gold ? "#fbbf24" : "#7dffb0",
+          e.gold ? 10 : 8,
+        );
       } else if (e.type === "die") {
         shake = reduced ? 0 : 0.5;
         flash = 0.38;
@@ -345,7 +379,7 @@ export function createRenderer(canvas) {
     if (punch > 0) punch = Math.max(0, punch - dt * 0.008);
     squash += (1 - squash) * Math.min(1, dt * 0.012);
     tongue = (tongue + dt * 0.01) % (Math.PI * 2);
-    zoom += ((1 + punch * 0.045) - zoom) * Math.min(1, dt * 0.02);
+    zoom += (1 + punch * 0.045 - zoom) * Math.min(1, dt * 0.02);
   }
 
   function goodCol() {
@@ -365,15 +399,28 @@ export function createRenderer(canvas) {
     const ey = state.dir.y;
     const off = minCell * 0.15;
     const gl = glowLevel();
-    if (gl > 0) blitGlow(glowSpriteHSL(hue, 80, 58), x, y, hr * (gl === 2 ? 2.1 : 1.7));
+    if (gl > 0)
+      blitGlow(glowSpriteHSL(hue, 80, 58), x, y, hr * (gl === 2 ? 2.1 : 1.7));
     ctx.fillStyle = "#ecffe8";
     ctx.beginPath();
     ctx.arc(x, y, hr, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = "#06210f";
     ctx.beginPath();
-    ctx.arc(x - ey * off + ex * hr * 0.28, y + ex * off + ey * hr * 0.28, hr * 0.18, 0, Math.PI * 2);
-    ctx.arc(x + ey * off + ex * hr * 0.28, y - ex * off + ey * hr * 0.28, hr * 0.18, 0, Math.PI * 2);
+    ctx.arc(
+      x - ey * off + ex * hr * 0.28,
+      y + ex * off + ey * hr * 0.28,
+      hr * 0.18,
+      0,
+      Math.PI * 2,
+    );
+    ctx.arc(
+      x + ey * off + ex * hr * 0.28,
+      y - ex * off + ey * hr * 0.28,
+      hr * 0.18,
+      0,
+      Math.PI * 2,
+    );
     ctx.fill();
     if (!reduced) {
       const tl = (0.55 + 0.45 * Math.sin(tongue * 3)) * hr * 0.9;
@@ -393,7 +440,12 @@ export function createRenderer(canvas) {
       const step = gl === 2 ? 1 : 2;
       for (let i = len - 1; i > 0; i -= step) {
         const A = ptAt(i);
-        blitGlow(sprite, A.x + ox, A.y + oy, (0.78 - (i / len) * 0.38) * minCell * 0.95);
+        blitGlow(
+          sprite,
+          A.x + ox,
+          A.y + oy,
+          (0.78 - (i / len) * 0.38) * minCell * 0.95,
+        );
       }
     }
     const samples = gl === 2 ? 4 : 2;
@@ -415,8 +467,11 @@ export function createRenderer(canvas) {
       p3s.y = P3.y + oy;
       const t = i / len;
       ctx.strokeStyle =
-        ghostAlpha < 1 ? "#93c5fd" : "hsl(" + (hue - i * 1.6) + " 72% " + (52 - t * 18) + "%)";
-      ctx.lineWidth = (ghostAlpha < 1 ? 0.68 - t * 0.3 : 0.78 - t * 0.38) * minCell;
+        ghostAlpha < 1
+          ? "#93c5fd"
+          : "hsl(" + (hue - i * 1.6) + " 72% " + (52 - t * 18) + "%)";
+      ctx.lineWidth =
+        (ghostAlpha < 1 ? 0.68 - t * 0.3 : 0.78 - t * 0.38) * minCell;
       ctx.beginPath();
       ctx.moveTo(p1s.x, p1s.y);
       for (let s = 1; s <= samples; s++) {
@@ -438,12 +493,27 @@ export function createRenderer(canvas) {
     if (ghost) ctx.globalAlpha = 0.55;
     const nt = collectTiles(len, W);
     for (let t = 0; t < nt; t += 2) {
-      drawBodyOnTile(state, len, tiles[t] * W, tiles[t + 1] * W, minCell, hue, 1);
+      drawBodyOnTile(
+        state,
+        len,
+        tiles[t] * W,
+        tiles[t + 1] * W,
+        minCell,
+        hue,
+        1,
+      );
     }
     ctx.globalAlpha = 1;
     const H = ptAt(0);
     for (let t = 0; t < nt; t += 2) {
-      drawHeadAt(state, H.x + tiles[t] * W, H.y + tiles[t + 1] * W, cw, ch, hue);
+      drawHeadAt(
+        state,
+        H.x + tiles[t] * W,
+        H.y + tiles[t + 1] * W,
+        cw,
+        ch,
+        hue,
+      );
     }
     if (trailId !== "none") {
       const slot = trailBuf[trailN % trailBuf.length];
@@ -452,7 +522,14 @@ export function createRenderer(canvas) {
       slot.a = 1;
       trailN++;
       const tr = minCell * 0.42;
-      ctx.fillStyle = trailId === "ember" ? "#fb923c" : trailId === "ion" ? "#67e8f9" : trailId === "ribbon" ? "#c4b5fd" : "#86efac";
+      ctx.fillStyle =
+        trailId === "ember"
+          ? "#fb923c"
+          : trailId === "ion"
+            ? "#67e8f9"
+            : trailId === "ribbon"
+              ? "#c4b5fd"
+              : "#86efac";
       for (let i = 0; i < Math.min(trailN, trailBuf.length); i++) {
         const trl = trailBuf[i];
         trl.a *= 0.92;
@@ -460,7 +537,13 @@ export function createRenderer(canvas) {
         ctx.globalAlpha = trl.a * 0.35;
         for (let t = 0; t < nt; t += 2) {
           ctx.beginPath();
-          ctx.arc(trl.x + tiles[t] * W, trl.y + tiles[t + 1] * W, tr * 0.35 * trl.a, 0, Math.PI * 2);
+          ctx.arc(
+            trl.x + tiles[t] * W,
+            trl.y + tiles[t + 1] * W,
+            tr * 0.35 * trl.a,
+            0,
+            Math.PI * 2,
+          );
           ctx.fill();
         }
       }
@@ -478,13 +561,27 @@ export function createRenderer(canvas) {
     ctx.globalAlpha = 0.32;
     const nt = collectTiles(len, W);
     for (let t = 0; t < nt; t += 2) {
-      drawBodyOnTile(state, len, tiles[t] * W, tiles[t + 1] * W, minCell, 210, 0.32);
+      drawBodyOnTile(
+        state,
+        len,
+        tiles[t] * W,
+        tiles[t + 1] * W,
+        minCell,
+        210,
+        0.32,
+      );
     }
     const H = ptAt(0);
     ctx.fillStyle = "#bfdbfe";
     for (let t = 0; t < nt; t += 2) {
       ctx.beginPath();
-      ctx.arc(H.x + tiles[t] * W, H.y + tiles[t + 1] * W, minCell * 0.34, 0, Math.PI * 2);
+      ctx.arc(
+        H.x + tiles[t] * W,
+        H.y + tiles[t + 1] * W,
+        minCell * 0.34,
+        0,
+        Math.PI * 2,
+      );
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -521,7 +618,14 @@ export function createRenderer(canvas) {
     cell = Math.min(cw, ch);
     const ox = !reduced && shake ? (Math.random() - 0.5) * shake * 10 : 0;
     const oy = !reduced && shake ? (Math.random() - 0.5) * shake * 10 : 0;
-    ctx.setTransform(zoom, 0, 0, zoom, ox + (1 - zoom) * W * 0.5, oy + (1 - zoom) * W * 0.5);
+    ctx.setTransform(
+      zoom,
+      0,
+      0,
+      zoom,
+      ox + (1 - zoom) * W * 0.5,
+      oy + (1 - zoom) * W * 0.5,
+    );
     ctx.drawImage(bgCache, 0, 0);
     ctx.drawImage(gridCache, 0, 0);
 
@@ -532,20 +636,39 @@ export function createRenderer(canvas) {
     for (const w of state.movingWalls) {
       ctx.fillStyle = "rgba(248,113,113,.55)";
       for (let i = 0; i < w.len; i++) {
-        ctx.fillRect((w.x + w.dx * i) * cw + 2, (w.y + w.dy * i) * ch + 2, cw - 4, ch - 4);
+        ctx.fillRect(
+          (w.x + w.dx * i) * cw + 2,
+          (w.y + w.dy * i) * ch + 2,
+          cw - 4,
+          ch - 4,
+        );
       }
     }
     for (const p of state.portals) {
       ctx.fillStyle = "#818cf8";
       ctx.beginPath();
-      ctx.arc((p.ax + 0.5) * cw, (p.ay + 0.5) * ch, cell * 0.32, 0, Math.PI * 2);
-      ctx.arc((p.bx + 0.5) * cw, (p.by + 0.5) * ch, cell * 0.32, 0, Math.PI * 2);
+      ctx.arc(
+        (p.ax + 0.5) * cw,
+        (p.ay + 0.5) * ch,
+        cell * 0.32,
+        0,
+        Math.PI * 2,
+      );
+      ctx.arc(
+        (p.bx + 0.5) * cw,
+        (p.by + 0.5) * ch,
+        cell * 0.32,
+        0,
+        Math.PI * 2,
+      );
       ctx.fill();
     }
 
     const food = state.food;
     if (food) {
-      const pulse = reduced ? 0.5 : 0.5 + 0.5 * Math.sin(now / (food.type === FOOD.GOLD ? 160 : 240));
+      const pulse = reduced
+        ? 0.5
+        : 0.5 + 0.5 * Math.sin(now / (food.type === FOOD.GOLD ? 160 : 240));
       const fx = (food.x + 0.5) * cw;
       const fy = (food.y + 0.5) * ch;
       const fr = cell * (0.26 + 0.07 * pulse);
@@ -553,7 +676,8 @@ export function createRenderer(canvas) {
       const isG = food.type === FOOD.GOLD;
       const fcol = isP ? badCol() : isG ? goldCol() : goodCol();
       const fgl = glowLevel();
-      if (fgl > 0) blitGlow(glowSpriteHex(fcol), fx, fy, fr * (2.4 + 0.9 * pulse));
+      if (fgl > 0)
+        blitGlow(glowSpriteHex(fcol), fx, fy, fr * (2.4 + 0.9 * pulse));
       ctx.fillStyle = fcol;
       ctx.beginPath();
       ctx.arc(fx, fy, fr, 0, Math.PI * 2);
@@ -567,15 +691,34 @@ export function createRenderer(canvas) {
     for (const p of state.powerups) {
       const px = (p.x + 0.5) * cw;
       const py = (p.y + 0.5) * ch;
-      ctx.fillStyle = p.type === POWER.X2 ? "#fbbf24" : p.type === POWER.GHOST ? "#c4b5fd" : p.type === POWER.MAGNET ? "#67e8f9" : p.type === POWER.SLOW ? "#93c5fd" : "#86efac";
+      ctx.fillStyle =
+        p.type === POWER.X2
+          ? "#fbbf24"
+          : p.type === POWER.GHOST
+            ? "#c4b5fd"
+            : p.type === POWER.MAGNET
+              ? "#67e8f9"
+              : p.type === POWER.SLOW
+                ? "#93c5fd"
+                : "#86efac";
       ctx.beginPath();
       ctx.arc(px, py, cell * 0.28, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = "#0b1220";
-      ctx.font = "700 " + ((cell * 0.28) | 0) + "px ui-sans-serif,system-ui,sans-serif";
+      ctx.font =
+        "700 " + ((cell * 0.28) | 0) + "px ui-sans-serif,system-ui,sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const glyph = p.type === POWER.X2 ? "2" : p.type === POWER.GHOST ? "G" : p.type === POWER.MAGNET ? "M" : p.type === POWER.SLOW ? "S" : "-";
+      const glyph =
+        p.type === POWER.X2
+          ? "2"
+          : p.type === POWER.GHOST
+            ? "G"
+            : p.type === POWER.MAGNET
+              ? "M"
+              : p.type === POWER.SLOW
+                ? "S"
+                : "-";
       ctx.fillText(glyph, px, py);
     }
 
@@ -598,7 +741,8 @@ export function createRenderer(canvas) {
       const f = floats[i];
       ctx.globalAlpha = f.t;
       ctx.fillStyle = f.col;
-      ctx.font = "700 " + ((cell * 0.42) | 0) + "px ui-sans-serif,system-ui,sans-serif";
+      ctx.font =
+        "700 " + ((cell * 0.42) | 0) + "px ui-sans-serif,system-ui,sans-serif";
       ctx.fillText(f.txt, f.gx * cw, f.gy * ch);
     }
     ctx.globalAlpha = 1;
@@ -607,7 +751,13 @@ export function createRenderer(canvas) {
       ctx.strokeStyle = eatCol;
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.arc((food.x + 0.5) * cw, (food.y + 0.5) * ch, cell * (0.42 + (1 - eatFx)), 0, Math.PI * 2);
+      ctx.arc(
+        (food.x + 0.5) * cw,
+        (food.y + 0.5) * ch,
+        cell * (0.42 + (1 - eatFx)),
+        0,
+        Math.PI * 2,
+      );
       ctx.stroke();
       ctx.globalAlpha = 1;
     }

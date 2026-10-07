@@ -1,6 +1,13 @@
 import { DIRS, SWIPE_PX_DEFAULT } from "../core/constants.js";
 
-const BLOCK = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Spacebar"]);
+const BLOCK = new Set([
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  " ",
+  "Spacebar",
+]);
 
 export function createInput(opts) {
   const {
@@ -39,12 +46,28 @@ export function createInput(opts) {
       remap = null;
       return;
     }
-    const onChip = !!(e.target && e.target.closest && e.target.closest(".chip, #panel, input, select, textarea, button"));
-    const onRestart = !!(e.target && e.target.closest && e.target.closest("#restartBtn"));
+    const onChip = !!(
+      e.target &&
+      e.target.closest &&
+      e.target.closest(".chip, #panel, input, select, textarea, button")
+    );
+    const onRestart = !!(
+      e.target &&
+      e.target.closest &&
+      e.target.closest("#restartBtn")
+    );
     const extra = isChip ? isChip(e.target) : onChip;
     const extraR = isRestart ? isRestart(e.target) : onRestart;
-    if ((BLOCK.has(e.key) || e.code === "Space") && !extra && !extraR) e.preventDefault();
-    if (e.repeat && (e.code === "Space" || e.key === "Enter" || e.key === "r" || e.key === "R")) return;
+    if ((BLOCK.has(e.key) || e.code === "Space") && !extra && !extraR)
+      e.preventDefault();
+    if (
+      e.repeat &&
+      (e.code === "Space" ||
+        e.key === "Enter" ||
+        e.key === "r" ||
+        e.key === "R")
+    )
+      return;
 
     const k = keys();
     if (e.key === "Escape") {
@@ -83,30 +106,55 @@ export function createInput(opts) {
     setTimeout(() => b.classList.remove("ripple"), 360);
     const dx = +b.dataset.dx;
     const dy = +b.dataset.dy;
-    const dir = dx === 1 ? DIRS.right : dx === -1 ? DIRS.left : dy === 1 ? DIRS.down : DIRS.up;
+    const dir =
+      dx === 1
+        ? DIRS.right
+        : dx === -1
+          ? DIRS.left
+          : dy === 1
+            ? DIRS.down
+            : DIRS.up;
     onDir(dir);
   }
 
   function pointerOnUi(x, y) {
     const node = document.elementFromPoint(x, y);
-    return !!(node && node.closest && node.closest("#ui, #panel, #pad, #pause, .chip, .cta, .menu, #splash"));
+    return !!(
+      node &&
+      node.closest &&
+      node.closest("#ui, #panel, #pad, #pause, .chip, .cta, .menu, #splash")
+    );
   }
 
   function applySwipe(dx, dy) {
     const th = (getSwipePx && getSwipePx()) || SWIPE_PX_DEFAULT;
     if (Math.hypot(dx, dy) < th) return;
-    const v = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? DIRS.right : DIRS.left) : dy > 0 ? DIRS.down : DIRS.up;
+    const v =
+      Math.abs(dx) > Math.abs(dy)
+        ? dx > 0
+          ? DIRS.right
+          : DIRS.left
+        : dy > 0
+          ? DIRS.down
+          : DIRS.up;
     onDir(v);
   }
 
   function onPointerDown(e) {
-    if (e.pointerType === "touch" || e.pointerType === "pen") document.body.classList.add("touch");
+    if (e.pointerType === "touch" || e.pointerType === "pen")
+      document.body.classList.add("touch");
     if (pointerOnUi(e.clientX, e.clientY)) {
       ignoreSwipe = true;
       return;
     }
     if (swipe) return;
-    swipe = { id: e.pointerId, x: e.clientX, y: e.clientY, lx: e.clientX, ly: e.clientY };
+    swipe = {
+      id: e.pointerId,
+      x: e.clientX,
+      y: e.clientY,
+      lx: e.clientX,
+      ly: e.clientY,
+    };
   }
 
   function onPointerMove(e) {
@@ -152,9 +200,20 @@ export function createInput(opts) {
     else if (g.buttons[14] && g.buttons[14].pressed) dir = DIRS.left;
     else if (g.buttons[15] && g.buttons[15].pressed) dir = DIRS.right;
     else if (Math.abs(ax) > 0.45 || Math.abs(ay) > 0.45) {
-      dir = Math.abs(ax) > Math.abs(ay) ? (ax > 0 ? DIRS.right : DIRS.left) : ay > 0 ? DIRS.down : DIRS.up;
+      dir =
+        Math.abs(ax) > Math.abs(ay)
+          ? ax > 0
+            ? DIRS.right
+            : DIRS.left
+          : ay > 0
+            ? DIRS.down
+            : DIRS.up;
     }
-    if (dir && (dir.x !== gamepadDir.x || dir.y !== gamepadDir.y) && now - lastGp > 80) {
+    if (
+      dir &&
+      (dir.x !== gamepadDir.x || dir.y !== gamepadDir.y) &&
+      now - lastGp > 80
+    ) {
       gamepadDir.x = dir.x;
       gamepadDir.y = dir.y;
       lastGp = now;
@@ -182,12 +241,16 @@ export function createInput(opts) {
     document.addEventListener("pointerup", onPointerUp, sig);
     document.addEventListener("pointercancel", onPointerCancel, sig);
     if (padEl) {
-      padEl.addEventListener("pointerdown", onPad, { signal: ac.signal, passive: false });
+      padEl.addEventListener("pointerdown", onPad, {
+        signal: ac.signal,
+        passive: false,
+      });
     }
     document.addEventListener(
       "touchmove",
       (e) => {
-        if (!(e.target && e.target.closest && e.target.closest("#ui, #panel"))) e.preventDefault();
+        if (!(e.target && e.target.closest && e.target.closest("#ui, #panel")))
+          e.preventDefault();
       },
       { signal: ac.signal, passive: false },
     );

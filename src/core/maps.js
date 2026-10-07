@@ -17,7 +17,12 @@ function rect(x0, y0, x1, y1) {
 function plus(cx, cy, arm) {
   const out = [{ x: cx, y: cy }];
   for (let i = 1; i <= arm; i++) {
-    out.push({ x: cx + i, y: cy }, { x: cx - i, y: cy }, { x: cx, y: cy + i }, { x: cx, y: cy - i });
+    out.push(
+      { x: cx + i, y: cy },
+      { x: cx - i, y: cy },
+      { x: cx, y: cy + i },
+      { x: cx, y: cy - i },
+    );
   }
   return out;
 }
@@ -64,7 +69,8 @@ export const MAPS = [
     wrapDefault: false,
     obstacles: (c, r) => {
       const box = rect(5, 5, c - 6, r - 6).filter(
-        (p) => !((p.x === 5 || p.x === c - 6) && p.y === ((r / 2) | 0)) &&
+        (p) =>
+          !((p.x === 5 || p.x === c - 6) && p.y === ((r / 2) | 0)) &&
           !((p.y === 5 || p.y === r - 6) && p.x === ((c / 2) | 0)),
       );
       return box;
@@ -120,7 +126,16 @@ export const MAPS = [
     ],
     walls: (c, r) => [
       { x: 3, y: 3, dx: 0, dy: 1, min: 2, max: r - 3, axis: "y", len: 2 },
-      { x: c - 4, y: r - 4, dx: 0, dy: -1, min: 2, max: r - 3, axis: "y", len: 2 },
+      {
+        x: c - 4,
+        y: r - 4,
+        dx: 0,
+        dy: -1,
+        min: 2,
+        max: r - 3,
+        axis: "y",
+        len: 2,
+      },
     ],
   },
   {
@@ -144,13 +159,24 @@ export const MAPS = [
       { ax: c - 3, ay: 2, bx: 2, by: r - 3 },
     ],
     walls: (c, r) => [
-      { x: (c / 2) | 0, y: 8, dx: 1, dy: 0, min: 8, max: c - 9, axis: "x", len: 4 },
+      {
+        x: (c / 2) | 0,
+        y: 8,
+        dx: 1,
+        dy: 0,
+        min: 8,
+        max: c - 9,
+        axis: "x",
+        len: 4,
+      },
     ],
   },
 ];
 
 export function getMap(id) {
-  return CUSTOM.find((m) => m.id === id) || MAPS.find((m) => m.id === id) || MAPS[0];
+  return (
+    CUSTOM.find((m) => m.id === id) || MAPS.find((m) => m.id === id) || MAPS[0]
+  );
 }
 
 export function applyCustomMaps(list) {
@@ -166,7 +192,12 @@ export function hydrateMap(raw) {
   const cols = raw.cols | 0 || 21;
   const rows = raw.rows | 0 || 21;
   const obstacles = (raw.obstacles || []).map((p) => ({ x: p.x, y: p.y }));
-  const portals = (raw.portals || []).map((p) => ({ ax: p.ax, ay: p.ay, bx: p.bx, by: p.by }));
+  const portals = (raw.portals || []).map((p) => ({
+    ax: p.ax,
+    ay: p.ay,
+    bx: p.bx,
+    by: p.by,
+  }));
   const walls = (raw.walls || []).map((w) => ({ ...w }));
   return {
     id: raw.id,
@@ -192,7 +223,11 @@ export function generateProcMap(seed) {
   for (let i = 0; i < n; i++) {
     const x = 2 + ((rng() * (size - 4)) | 0);
     const y = 2 + ((rng() * (size - 4)) | 0);
-    if (Math.abs(x - ((size / 2) | 0)) < 2 && Math.abs(y - ((size / 2) | 0)) < 2) continue;
+    if (
+      Math.abs(x - ((size / 2) | 0)) < 2 &&
+      Math.abs(y - ((size / 2) | 0)) < 2
+    )
+      continue;
     obstacles.push({ x, y });
   }
   const portals = [];

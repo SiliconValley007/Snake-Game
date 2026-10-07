@@ -11,9 +11,13 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== STATIC).map((k) => caches.delete(k))),
-    ),
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.filter((k) => k !== STATIC).map((k) => caches.delete(k)),
+        ),
+      ),
   );
   self.clients.claim();
 });
@@ -28,7 +32,10 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
   const dest = req.destination;
-  const isDoc = dest === "document" || url.pathname.endsWith("/") || url.pathname.endsWith(".html");
+  const isDoc =
+    dest === "document" ||
+    url.pathname.endsWith("/") ||
+    url.pathname.endsWith(".html");
   if (isDoc) {
     event.respondWith(
       fetch(req)
@@ -39,7 +46,9 @@ self.addEventListener("fetch", (event) => {
           }
           return res;
         })
-        .catch(() => caches.match(req).then((c) => c || caches.match("./index.html"))),
+        .catch(() =>
+          caches.match(req).then((c) => c || caches.match("./index.html")),
+        ),
     );
     return;
   }

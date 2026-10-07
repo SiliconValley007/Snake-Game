@@ -20,11 +20,11 @@ npm run preview
 
 ## Controls
 
-| Action | Keyboard | Touch | Gamepad |
-| --- | --- | --- | --- |
-| Move | Arrows or WASD | Swipe or D-pad | D-pad / left stick |
-| Pause / Resume | Space, P, or Esc | Pause button or Resume | Start |
-| Restart | R | Pause menu Restart, or Again after game over | A (primary) |
+| Action         | Keyboard         | Touch                                        | Gamepad            |
+| -------------- | ---------------- | -------------------------------------------- | ------------------ |
+| Move           | Arrows or WASD   | Swipe or D-pad                               | D-pad / left stick |
+| Pause / Resume | Space, P, or Esc | Pause button or Resume                       | Start              |
+| Restart        | R                | Pause menu Restart, or Again after game over | A (primary)        |
 
 Restart from pause returns to the ready screen so Wrap, Sound, mode, map, and difficulty can be changed before Play.
 
@@ -40,13 +40,13 @@ Space on a focused chip does not steal the toggle. Swipe updates live on pointer
 
 ## Modes
 
-| Mode | Notes |
-| --- | --- |
-| Classic | Clear the board. Hazards from the selected map. |
-| Time Attack | 90 seconds. Score as much as you can. |
-| Endless | Clearing a board advances a level and cycles maps. |
-| Daily | Seeded from the UTC date. Shared local daily board. |
-| Zen | No poison, no extra hazards, slower floor. |
+| Mode        | Notes                                               |
+| ----------- | --------------------------------------------------- |
+| Classic     | Clear the board. Hazards from the selected map.     |
+| Time Attack | 90 seconds. Score as much as you can.               |
+| Endless     | Clearing a board advances a level and cycles maps.  |
+| Daily       | Seeded from the UTC date. Shared local daily board. |
+| Zen         | No poison, no extra hazards, slower floor.          |
 
 Difficulty: Easy, Normal, Hard, Viper. Maps: Arena, Garden, Fortress, Rivers, Voidgate, Colossus, plus seeded procedural maps and a local editor.
 
@@ -60,22 +60,16 @@ Wrap, Sound, Music/SFX sliders, mute, haptics, reduced-motion override, swipe se
 
 ## Scripts
 
-| Script | What |
-| --- | --- |
-| `npm run dev` | Vite dev server |
-| `npm run build` | Icons + production bundle (`base: ./`) |
-| `npm run preview` | Serve `dist` at `/` |
-| `npm run preview:subpath` | Serve `dist` at `/viper/` |
-| `npm test` | Vitest |
-| `npm run test:e2e` | Playwright against `/viper/` preview |
-| `npm run lhci` | Lighthouse CI on `/viper/` |
-| `npm run icons` | PNG icons |
-
-## Deploy (GitHub Pages)
-
-1. Enable Pages (GitHub Actions).
-2. Push `main`. `.github/workflows/deploy.yml` runs tests, Playwright, Lighthouse CI, then builds with relative `base`, injects absolute OG URLs from `SITE_URL`, and uploads `dist`.
-3. Or copy `dist` to any static host. `public/.nojekyll` avoids Jekyll filtering.
+| Script                    | What                                   |
+| ------------------------- | -------------------------------------- |
+| `npm run dev`             | Vite dev server                        |
+| `npm run build`           | Icons + production bundle (`base: ./`) |
+| `npm run preview`         | Serve `dist` at `/`                    |
+| `npm run preview:subpath` | Serve `dist` at `/viper/`              |
+| `npm test`                | Vitest                                 |
+| `npm run test:e2e`        | Playwright against `/viper/` preview   |
+| `npm run lhci`            | Lighthouse CI on `/viper/`             |
+| `npm run icons`           | PNG icons                              |
 
 ## Testing
 
@@ -123,11 +117,3 @@ Vite 6, vanilla ES modules, Vitest, Playwright, GitHub Actions → Pages. Zero r
 ## License
 
 MIT. See `LICENSE`.
-
-## Verification (this build)
-
-- `npx vitest run` — 63/63 passed
-- `npm run build` — Vite 6.4.3, 16 modules, warning-free
-- `SITE_URL=https://example.github.io/viper/ npm run build` — `og:image`/`og:url`/`twitter:image` absolute
-- `npx playwright test` — 28/28 passed, 0 skipped (chromium + Pixel 5)
-- `npx lhci autorun` — `/viper/` sub-path: Performance 100, Accessibility 100, Best Practices 100, SEO 100, PWA 100

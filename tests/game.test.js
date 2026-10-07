@@ -1,9 +1,28 @@
 import { describe, it, expect } from "vitest";
-import { createGame, step, enqueueDir, replay, verifyReplay, getTickMs } from "../src/core/game.js";
+import {
+  createGame,
+  step,
+  enqueueDir,
+  replay,
+  verifyReplay,
+  getTickMs,
+} from "../src/core/game.js";
 import { DIRS, FOOD, MODES, POWER, DIFFICULTY } from "../src/core/constants.js";
 import { MAPS, getMap, cellKey } from "../src/core/maps.js";
-import { mulberry32, hashString, dailySeed, utcDateKey } from "../src/core/rng.js";
-import { unwrapCell, headCell, tailCell, catmull, buildChain, chainMaxGap } from "../src/render/interp.js";
+import {
+  mulberry32,
+  hashString,
+  dailySeed,
+  utcDateKey,
+} from "../src/core/rng.js";
+import {
+  unwrapCell,
+  headCell,
+  tailCell,
+  catmull,
+  buildChain,
+  chainMaxGap,
+} from "../src/render/interp.js";
 
 function runTicks(state, n) {
   for (let i = 0; i < n && state.alive; i++) step(state, 0);
@@ -31,7 +50,13 @@ describe("rng", () => {
 
 describe("seeded runs", () => {
   it("same seed yields same food and score path", () => {
-    const opts = { mode: MODES.CLASSIC, difficulty: DIFFICULTY.NORMAL, mapId: "arena", seed: 12345, wrapOn: true };
+    const opts = {
+      mode: MODES.CLASSIC,
+      difficulty: DIFFICULTY.NORMAL,
+      mapId: "arena",
+      seed: 12345,
+      wrapOn: true,
+    };
     const a = createGame(opts);
     const b = createGame(opts);
     expect(a.food).toEqual(b.food);
@@ -40,7 +65,9 @@ describe("seeded runs", () => {
     runTicks(a, 40);
     runTicks(b, 40);
     expect(a.score).toBe(b.score);
-    expect(a.snake.map((p) => p.x + "," + p.y)).toEqual(b.snake.map((p) => p.x + "," + p.y));
+    expect(a.snake.map((p) => p.x + "," + p.y)).toEqual(
+      b.snake.map((p) => p.x + "," + p.y),
+    );
     expect(a.tickCount).toBe(b.tickCount);
   });
 });
@@ -299,13 +326,27 @@ describe("perks and drafts", () => {
 
 describe("replay verification", () => {
   it("replays input log to the same score", () => {
-    const opts = { mode: MODES.CLASSIC, difficulty: DIFFICULTY.EASY, mapId: "arena", seed: 777, wrapOn: true };
+    const opts = {
+      mode: MODES.CLASSIC,
+      difficulty: DIFFICULTY.EASY,
+      mapId: "arena",
+      seed: 777,
+      wrapOn: true,
+    };
     const s = createGame(opts);
-    const dirs = [DIRS.up, DIRS.right, DIRS.down, DIRS.left, DIRS.up, DIRS.right];
+    const dirs = [
+      DIRS.up,
+      DIRS.right,
+      DIRS.down,
+      DIRS.left,
+      DIRS.up,
+      DIRS.right,
+    ];
     for (let i = 0; i < 80 && s.alive; i++) {
       if (i % 7 === 0) {
         const d = dirs[(i / 7) | 0];
-        if (d && enqueueDir(s, d, 0)) s.inputLog.push({ t: s.tickCount, d: d.name });
+        if (d && enqueueDir(s, d, 0))
+          s.inputLog.push({ t: s.tickCount, d: d.name });
       }
       step(s, 0);
     }
@@ -389,7 +430,14 @@ describe("interpolation continuity", () => {
   });
   it("catmull midpoint sits between endpoints", () => {
     const out = { x: 0, y: 0 };
-    catmull({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, 0.5, out);
+    catmull(
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+      0.5,
+      out,
+    );
     expect(out.x).toBeGreaterThan(1);
     expect(out.x).toBeLessThan(2);
     expect(out.y).toBeCloseTo(0);
@@ -416,7 +464,11 @@ describe("wrap-turn chain continuity", () => {
     s.snake = cells.map((p) => ({ x: p.x, y: p.y }));
     s.prev = s.snake.map((p) => ({ ...p }));
     s.dir = dir;
-    s.food = { x: (s.snake[0].x + 3 + s.cols) % s.cols, y: (s.snake[0].y + 3 + s.rows) % s.rows, type: FOOD.NORMAL };
+    s.food = {
+      x: (s.snake[0].x + 3 + s.cols) % s.cols,
+      y: (s.snake[0].y + 3 + s.rows) % s.rows,
+      type: FOOD.NORMAL,
+    };
     s.obstacles = [];
     s.wrapOn = true;
   }
@@ -429,19 +481,101 @@ describe("wrap-turn chain continuity", () => {
       expect(n).toBe(s.snake.length);
       for (let i = 1; i < n; i++) {
         if (cs[i]) continue;
-        expect(Math.hypot(cx[i] - cx[i - 1], cy[i] - cy[i - 1])).toBeLessThanOrEqual(1.05);
+        expect(
+          Math.hypot(cx[i] - cx[i - 1], cy[i] - cy[i - 1]),
+        ).toBeLessThanOrEqual(1.05);
       }
     }
   }
   const cases = [
-    { name: "right wall then up", cells: [{ x: 16, y: 8 }, { x: 15, y: 8 }, { x: 14, y: 8 }, { x: 13, y: 8 }], dir: DIRS.right, turn: DIRS.up },
-    { name: "left wall then down", cells: [{ x: 0, y: 8 }, { x: 1, y: 8 }, { x: 2, y: 8 }, { x: 3, y: 8 }], dir: DIRS.left, turn: DIRS.down },
-    { name: "top wall then right", cells: [{ x: 8, y: 0 }, { x: 8, y: 1 }, { x: 8, y: 2 }, { x: 8, y: 3 }], dir: DIRS.up, turn: DIRS.right },
-    { name: "bottom wall then left", cells: [{ x: 8, y: 16 }, { x: 8, y: 15 }, { x: 8, y: 14 }, { x: 8, y: 13 }], dir: DIRS.down, turn: DIRS.left },
-    { name: "NE corner right then up", cells: [{ x: 16, y: 0 }, { x: 15, y: 0 }, { x: 14, y: 0 }, { x: 13, y: 0 }], dir: DIRS.right, turn: DIRS.up },
-    { name: "NW corner left then up", cells: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }], dir: DIRS.left, turn: DIRS.up },
-    { name: "SE corner right then down", cells: [{ x: 16, y: 16 }, { x: 15, y: 16 }, { x: 14, y: 16 }, { x: 13, y: 16 }], dir: DIRS.right, turn: DIRS.down },
-    { name: "SW corner left then down", cells: [{ x: 0, y: 16 }, { x: 1, y: 16 }, { x: 2, y: 16 }, { x: 3, y: 16 }], dir: DIRS.left, turn: DIRS.down },
+    {
+      name: "right wall then up",
+      cells: [
+        { x: 16, y: 8 },
+        { x: 15, y: 8 },
+        { x: 14, y: 8 },
+        { x: 13, y: 8 },
+      ],
+      dir: DIRS.right,
+      turn: DIRS.up,
+    },
+    {
+      name: "left wall then down",
+      cells: [
+        { x: 0, y: 8 },
+        { x: 1, y: 8 },
+        { x: 2, y: 8 },
+        { x: 3, y: 8 },
+      ],
+      dir: DIRS.left,
+      turn: DIRS.down,
+    },
+    {
+      name: "top wall then right",
+      cells: [
+        { x: 8, y: 0 },
+        { x: 8, y: 1 },
+        { x: 8, y: 2 },
+        { x: 8, y: 3 },
+      ],
+      dir: DIRS.up,
+      turn: DIRS.right,
+    },
+    {
+      name: "bottom wall then left",
+      cells: [
+        { x: 8, y: 16 },
+        { x: 8, y: 15 },
+        { x: 8, y: 14 },
+        { x: 8, y: 13 },
+      ],
+      dir: DIRS.down,
+      turn: DIRS.left,
+    },
+    {
+      name: "NE corner right then up",
+      cells: [
+        { x: 16, y: 0 },
+        { x: 15, y: 0 },
+        { x: 14, y: 0 },
+        { x: 13, y: 0 },
+      ],
+      dir: DIRS.right,
+      turn: DIRS.up,
+    },
+    {
+      name: "NW corner left then up",
+      cells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+      ],
+      dir: DIRS.left,
+      turn: DIRS.up,
+    },
+    {
+      name: "SE corner right then down",
+      cells: [
+        { x: 16, y: 16 },
+        { x: 15, y: 16 },
+        { x: 14, y: 16 },
+        { x: 13, y: 16 },
+      ],
+      dir: DIRS.right,
+      turn: DIRS.down,
+    },
+    {
+      name: "SW corner left then down",
+      cells: [
+        { x: 0, y: 16 },
+        { x: 1, y: 16 },
+        { x: 2, y: 16 },
+        { x: 3, y: 16 },
+      ],
+      dir: DIRS.left,
+      turn: DIRS.down,
+    },
   ];
   for (const c of cases) {
     it(c.name, () => {
@@ -451,7 +585,11 @@ describe("wrap-turn chain continuity", () => {
       enqueueDir(s, c.turn, 0);
       step(s, 0);
       assertChain(s);
-      s.food = { x: s.snake[0].x + s.dir.x, y: s.snake[0].y + s.dir.y, type: FOOD.NORMAL };
+      s.food = {
+        x: s.snake[0].x + s.dir.x,
+        y: s.snake[0].y + s.dir.y,
+        type: FOOD.NORMAL,
+      };
       if (s.food.x < 0) s.food.x += s.cols;
       if (s.food.y < 0) s.food.y += s.rows;
       if (s.food.x >= s.cols) s.food.x -= s.cols;

@@ -166,8 +166,16 @@ export const ACHIEVEMENTS = [
   { id: "daily", name: "Ritual", desc: "Complete a daily challenge" },
   { id: "zen-50", name: "Stillness", desc: "Reach length 50 in Zen" },
   { id: "clear", name: "Apex", desc: "Clear a classic board" },
-  { id: "poison-dodge", name: "No Thanks", desc: "Ignore poison 10 times in a run" },
-  { id: "all-powers", name: "Fully Loaded", desc: "Pick up every power-up type" },
+  {
+    id: "poison-dodge",
+    name: "No Thanks",
+    desc: "Ignore poison 10 times in a run",
+  },
+  {
+    id: "all-powers",
+    name: "Fully Loaded",
+    desc: "Pick up every power-up type",
+  },
   { id: "hard-win", name: "Venom", desc: "Score 200 on Hard or Viper" },
   { id: "time-200", name: "Sprinter", desc: "Score 200 in Time Attack" },
   { id: "level-5", name: "Climber", desc: "Reach player level 5" },

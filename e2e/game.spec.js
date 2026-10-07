@@ -4,7 +4,11 @@ async function ready(page) {
   await page.addInitScript(() => {
     const cur = (() => {
       try {
-        return JSON.parse(localStorage.getItem("viper:save") || localStorage.getItem("viper") || "{}");
+        return JSON.parse(
+          localStorage.getItem("viper:save") ||
+            localStorage.getItem("viper") ||
+            "{}",
+        );
       } catch {
         return {};
       }
@@ -14,10 +18,16 @@ async function ready(page) {
     localStorage.setItem("viper:save", JSON.stringify(cur));
   });
   await page.goto("./");
-  await page.locator("#splash").evaluate((el) => el.classList.add("hide")).catch(() => {});
-  await page.locator("#panel").evaluate((el) => {
-    el.hidden = true;
-  }).catch(() => {});
+  await page
+    .locator("#splash")
+    .evaluate((el) => el.classList.add("hide"))
+    .catch(() => {});
+  await page
+    .locator("#panel")
+    .evaluate((el) => {
+      el.hidden = true;
+    })
+    .catch(() => {});
   await expect(page.locator("#btn")).toBeVisible({ timeout: 8000 });
 }
 
@@ -33,7 +43,9 @@ async function toIdle(page) {
     await restart.click();
   }
   await expect(page.locator("#btn")).toHaveText(/Play/i, { timeout: 5000 });
-  await expect(page.locator("#modeRow .chip").first()).toBeVisible({ timeout: 5000 });
+  await expect(page.locator("#modeRow .chip").first()).toBeVisible({
+    timeout: 5000,
+  });
 }
 
 test.describe.configure({ mode: "serial" });
@@ -63,7 +75,9 @@ test("classic: start, steer, eat or die, pause/resume", async ({ page }) => {
   await expect(ui).not.toHaveClass(/hide/, { timeout: 5000 });
   await page.locator("#btn").click();
   await expect(ui).toHaveClass(/hide/, { timeout: 8000 });
-  expect(errors.filter((e) => !/Failed to load resource|vite/i.test(e))).toEqual([]);
+  expect(
+    errors.filter((e) => !/Failed to load resource|vite/i.test(e)),
+  ).toEqual([]);
 });
 
 test("run keeps ticking without hitstop stalls", async ({ page }) => {
@@ -78,7 +92,9 @@ test("run keeps ticking without hitstop stalls", async ({ page }) => {
   const samples = [];
   for (let i = 0; i < 5; i++) {
     await page.waitForTimeout(350);
-    samples.push(await page.evaluate(() => window.__VIPER__.getGame().tickCount));
+    samples.push(
+      await page.evaluate(() => window.__VIPER__.getGame().tickCount),
+    );
   }
   expect(samples[samples.length - 1]).toBeGreaterThan(samples[0] + 4);
   for (let i = 1; i < samples.length; i++) {
@@ -96,7 +112,9 @@ test("each mode starts", async ({ page }) => {
     await page.keyboard.press("ArrowRight");
     await page.waitForTimeout(80);
     await page.locator("#pause").click();
-    await expect(page.locator("#ui")).not.toHaveClass(/hide/, { timeout: 5000 });
+    await expect(page.locator("#ui")).not.toHaveClass(/hide/, {
+      timeout: 5000,
+    });
     await page.locator("#restartBtn").click();
     await expect(page.locator("#btn")).toHaveText(/Play/i);
   }
@@ -110,7 +128,10 @@ test("settings persist across reload", async ({ page }) => {
   await page.locator("#panelClose").click();
   await expect(page.locator("#panel")).toBeHidden();
   await page.reload();
-  await page.locator("#splash").evaluate((el) => el.classList.add("hide")).catch(() => {});
+  await page
+    .locator("#splash")
+    .evaluate((el) => el.classList.add("hide"))
+    .catch(() => {});
   await page.locator("#settingsBtn").click();
   await expect(page.locator("#hapCk")).not.toBeChecked();
 });
@@ -125,7 +146,9 @@ test("home title visible without scroll; overlays close", async ({ page }) => {
     const r = h1.getBoundingClientRect();
     const u = el.getBoundingClientRect();
     return {
-      noScroll: el.scrollHeight <= el.clientHeight + 1 && el.scrollWidth <= el.clientWidth + 1,
+      noScroll:
+        el.scrollHeight <= el.clientHeight + 1 &&
+        el.scrollWidth <= el.clientWidth + 1,
       titleInView: r.top >= u.top - 1 && r.bottom <= u.bottom + 1,
       overflow: getComputedStyle(el).overflow,
     };
@@ -133,7 +156,13 @@ test("home title visible without scroll; overlays close", async ({ page }) => {
   expect(fit.noScroll).toBe(true);
   expect(fit.titleInView).toBe(true);
   expect(fit.overflow).toMatch(/hidden|clip/);
-  for (const id of ["settingsBtn", "garageBtn", "boardBtn", "achBtn", "helpBtn"]) {
+  for (const id of [
+    "settingsBtn",
+    "garageBtn",
+    "boardBtn",
+    "achBtn",
+    "helpBtn",
+  ]) {
     await page.locator("#" + id).click();
     await expect(page.locator("#panel")).toBeVisible();
     await page.locator("#panelClose").click();
@@ -199,15 +228,23 @@ test("eat does not stall head or tail interpolation", async ({ page }) => {
         if (game.alive && game.snake[0]) {
           const hd = game.snake[0];
           game.food = {
-            x: ((hd.x + (game.dir.x || 1) + game.cols) % game.cols),
-            y: ((hd.y + (game.dir.y || 0) + game.rows) % game.rows),
+            x: (hd.x + (game.dir.x || 1) + game.cols) % game.cols,
+            y: (hd.y + (game.dir.y || 0) + game.rows) % game.rows,
             type: "normal",
           };
         }
         const a = api.getAlpha();
         const h = { ...api.headCell(game, a) };
         const t = { ...api.tailCell(game, a) };
-        samples.push({ h, t, now, len: game.snake.length, cols: game.cols, rows: game.rows, score: game.score });
+        samples.push({
+          h,
+          t,
+          now,
+          len: game.snake.length,
+          cols: game.cols,
+          rows: game.rows,
+          score: game.score,
+        });
         if (now - t0 < 1400) requestAnimationFrame(sample);
         else resolve();
       }
@@ -237,7 +274,9 @@ test("eat does not stall head or tail interpolation", async ({ page }) => {
   expect(result.maxHead).toBeLessThan(1);
   expect(result.maxTail).toBeLessThan(1);
   expect(result.maxStall).toBeLessThan(10);
-  expect(errors.filter((e) => !/Failed to load resource|vite/i.test(e))).toEqual([]);
+  expect(
+    errors.filter((e) => !/Failed to load resource|vite/i.test(e)),
+  ).toEqual([]);
 });
 
 test("wrap-turn chain stays contiguous", async ({ page }) => {
@@ -252,10 +291,46 @@ test("wrap-turn chain stays contiguous", async ({ page }) => {
   const result = await page.evaluate(async () => {
     const api = window.__VIPER__;
     const cases = [
-      { cells: (c) => [{ x: c.cols - 1, y: 8 }, { x: c.cols - 2, y: 8 }, { x: c.cols - 3, y: 8 }], dir: { x: 1, y: 0, name: "right" }, turn: { x: 0, y: -1, name: "up" }, wrapped: (g) => g.snake[0].x === 0 },
-      { cells: (c) => [{ x: 0, y: 8 }, { x: 1, y: 8 }, { x: 2, y: 8 }], dir: { x: -1, y: 0, name: "left" }, turn: { x: 0, y: 1, name: "down" }, wrapped: (g) => g.snake[0].x === g.cols - 1 },
-      { cells: (c) => [{ x: 8, y: 0 }, { x: 8, y: 1 }, { x: 8, y: 2 }], dir: { x: 0, y: -1, name: "up" }, turn: { x: 1, y: 0, name: "right" }, wrapped: (g) => g.snake[0].y === g.rows - 1 },
-      { cells: (c) => [{ x: 8, y: c.rows - 1 }, { x: 8, y: c.rows - 2 }, { x: 8, y: c.rows - 3 }], dir: { x: 0, y: 1, name: "down" }, turn: { x: -1, y: 0, name: "left" }, wrapped: (g) => g.snake[0].y === 0 },
+      {
+        cells: (c) => [
+          { x: c.cols - 1, y: 8 },
+          { x: c.cols - 2, y: 8 },
+          { x: c.cols - 3, y: 8 },
+        ],
+        dir: { x: 1, y: 0, name: "right" },
+        turn: { x: 0, y: -1, name: "up" },
+        wrapped: (g) => g.snake[0].x === 0,
+      },
+      {
+        cells: (c) => [
+          { x: 0, y: 8 },
+          { x: 1, y: 8 },
+          { x: 2, y: 8 },
+        ],
+        dir: { x: -1, y: 0, name: "left" },
+        turn: { x: 0, y: 1, name: "down" },
+        wrapped: (g) => g.snake[0].x === g.cols - 1,
+      },
+      {
+        cells: (c) => [
+          { x: 8, y: 0 },
+          { x: 8, y: 1 },
+          { x: 8, y: 2 },
+        ],
+        dir: { x: 0, y: -1, name: "up" },
+        turn: { x: 1, y: 0, name: "right" },
+        wrapped: (g) => g.snake[0].y === g.rows - 1,
+      },
+      {
+        cells: (c) => [
+          { x: 8, y: c.rows - 1 },
+          { x: 8, y: c.rows - 2 },
+          { x: 8, y: c.rows - 3 },
+        ],
+        dir: { x: 0, y: 1, name: "down" },
+        turn: { x: -1, y: 0, name: "left" },
+        wrapped: (g) => g.snake[0].y === 0,
+      },
     ];
     const out = [];
     for (const cs of cases) {
@@ -298,7 +373,9 @@ test("wrap-turn chain stays contiguous", async ({ page }) => {
     expect(r.n).toBeGreaterThan(8);
     expect(r.max).toBeLessThanOrEqual(1.05);
   }
-  expect(errors.filter((e) => !/Failed to load resource|vite/i.test(e))).toEqual([]);
+  expect(
+    errors.filter((e) => !/Failed to load resource|vite/i.test(e)),
+  ).toEqual([]);
 });
 
 test("bfcache pageshow restores idle", async ({ page }) => {
@@ -306,7 +383,10 @@ test("bfcache pageshow restores idle", async ({ page }) => {
   await expect(page.locator("#btn")).toHaveText(/Play/i);
   await page.goto("about:blank");
   await page.goBack();
-  await page.locator("#splash").evaluate((el) => el.classList.add("hide")).catch(() => {});
+  await page
+    .locator("#splash")
+    .evaluate((el) => el.classList.add("hide"))
+    .catch(() => {});
   await expect(page.locator("h1").first()).toBeVisible({ timeout: 8000 });
   await expect(page.locator("#btn")).toBeVisible();
   await page.locator("#btn").click();
@@ -326,7 +406,9 @@ test("gamepad mock steers", async ({ page }) => {
   await page.waitForTimeout(400);
   await expect(page.locator("#ui")).toHaveClass(/hide/, { timeout: 8000 });
   await page.evaluate(() => {
-    const buttons = Array.from({ length: 16 }, (_, i) => ({ pressed: i === 12 }));
+    const buttons = Array.from({ length: 16 }, (_, i) => ({
+      pressed: i === 12,
+    }));
     Object.defineProperty(navigator, "getGamepads", {
       configurable: true,
       value: () => [{ axes: [0, 0], buttons, connected: true, id: "mock" }],
@@ -341,7 +423,9 @@ test("gamepad mock steers", async ({ page }) => {
   await page.locator("#pause").click();
   await expect(page.locator("#ui")).not.toHaveClass(/hide/, { timeout: 5000 });
   await page.evaluate(() => {
-    const buttons = Array.from({ length: 16 }, (_, i) => ({ pressed: i === 0 }));
+    const buttons = Array.from({ length: 16 }, (_, i) => ({
+      pressed: i === 0,
+    }));
     Object.defineProperty(navigator, "getGamepads", {
       configurable: true,
       value: () => [{ axes: [0, 0], buttons, connected: true, id: "mock" }],
@@ -371,22 +455,35 @@ test("music stops on pause and idle", async ({ page }) => {
   expect(await page.evaluate(() => window.__VIPER__.musicPlaying())).toBe(true);
   await page.locator("#pause").click();
   await expect(page.locator("#ui")).not.toHaveClass(/hide/, { timeout: 5000 });
-  expect(await page.evaluate(() => window.__VIPER__.musicPlaying())).toBe(false);
+  expect(await page.evaluate(() => window.__VIPER__.musicPlaying())).toBe(
+    false,
+  );
   await page.locator("#restartBtn").click();
   await expect(page.locator("#btn")).toHaveText(/Play/i);
-  expect(await page.evaluate(() => window.__VIPER__.musicPlaying())).toBe(false);
+  expect(await page.evaluate(() => window.__VIPER__.musicPlaying())).toBe(
+    false,
+  );
 });
 
 test("legacy save migrates and quota does not crash", async ({ page }) => {
   await page.addInitScript(() => {
-    localStorage.setItem("viper", JSON.stringify({ best: 77, wrap: true, sound: true }));
+    localStorage.setItem(
+      "viper",
+      JSON.stringify({ best: 77, wrap: true, sound: true }),
+    );
     localStorage.setItem("viperBest", "90");
   });
   await page.goto("./");
-  await page.locator("#splash").evaluate((el) => el.classList.add("hide")).catch(() => {});
-  await page.locator("#panel").evaluate((el) => {
-    el.hidden = true;
-  }).catch(() => {});
+  await page
+    .locator("#splash")
+    .evaluate((el) => el.classList.add("hide"))
+    .catch(() => {});
+  await page
+    .locator("#panel")
+    .evaluate((el) => {
+      el.hidden = true;
+    })
+    .catch(() => {});
   await expect(page.locator("#btn")).toBeVisible({ timeout: 8000 });
   const save = await page.evaluate(() => window.__VIPER__.getSave());
   expect(save.best).toBeGreaterThanOrEqual(90);

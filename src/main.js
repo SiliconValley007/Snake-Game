@@ -1,6 +1,16 @@
 import "./styles.css";
 import { BASE_TICK, MODES } from "./core/constants.js";
-import { createGame, enqueueDir, step, getTickMs, timeTick, recordInput, replay, verifyReplay, applyDraft } from "./core/game.js";
+import {
+  createGame,
+  enqueueDir,
+  step,
+  getTickMs,
+  timeTick,
+  recordInput,
+  replay,
+  verifyReplay,
+  applyDraft,
+} from "./core/game.js";
 import { loadSave, writeSave, exportSave, importSave } from "./core/storage.js";
 import { dailySeed } from "./core/rng.js";
 import { applyCustomMaps, generateProcMap } from "./core/maps.js";
@@ -27,9 +37,21 @@ import {
   treeHtml,
   mapsHtml,
 } from "./ui/ui.js";
-import { recordRun, makeReplay, shareCard, claimMission, dailyMissions, tickMissions } from "./meta/meta.js";
+import {
+  recordRun,
+  makeReplay,
+  shareCard,
+  claimMission,
+  dailyMissions,
+  tickMissions,
+} from "./meta/meta.js";
 import { META_UPGRADES, PERKS } from "./core/constants.js";
-import { registerSW, applyWaiting, requestWakeLock, enterFullscreen } from "./pwa/pwa.js";
+import {
+  registerSW,
+  applyWaiting,
+  requestWakeLock,
+  enterFullscreen,
+} from "./pwa/pwa.js";
 import { POWER } from "./core/constants.js";
 
 const ICON_PAUSE =
@@ -46,13 +68,20 @@ function boot() {
 
   const reducedMq = matchMedia("(prefers-reduced-motion: reduce)");
   let save = loadSave(window.localStorage);
-  let reduced = save.reducedMotion != null ? !!save.reducedMotion : reducedMq.matches;
+  let reduced =
+    save.reducedMotion != null ? !!save.reducedMotion : reducedMq.matches;
   if (reduced) document.body.classList.add("reduce");
   document.body.classList.toggle("leftPad", !!save.leftPad);
 
   const audio = createAudio();
   const renderer = createRenderer(canvas);
-  renderer.setTheme(save.theme, save.skin, save.trail, save.colorblind, reduced);
+  renderer.setTheme(
+    save.theme,
+    save.skin,
+    save.trail,
+    save.colorblind,
+    reduced,
+  );
   renderer.setQuality(save.quality || "auto");
   applyCustomMaps(save.customMaps);
 
@@ -107,9 +136,12 @@ function boot() {
     const pw = el("pwHud");
     if (pw) {
       const bits = [];
-      if (game.active[POWER.SLOW] > 0) bits.push("S " + game.active[POWER.SLOW]);
-      if (game.active[POWER.GHOST] > 0) bits.push("G " + game.active[POWER.GHOST]);
-      if (game.active[POWER.MAGNET] > 0) bits.push("M " + game.active[POWER.MAGNET]);
+      if (game.active[POWER.SLOW] > 0)
+        bits.push("S " + game.active[POWER.SLOW]);
+      if (game.active[POWER.GHOST] > 0)
+        bits.push("G " + game.active[POWER.GHOST]);
+      if (game.active[POWER.MAGNET] > 0)
+        bits.push("M " + game.active[POWER.MAGNET]);
       if (game.active[POWER.X2] > 0) bits.push("2 " + game.active[POWER.X2]);
       pw.textContent = bits.join(" · ");
     }
@@ -133,13 +165,18 @@ function boot() {
     }
     SC.getAnimations().forEach((a) => a.cancel());
     SC.animate(
-      [{ transform: "scale(1)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }],
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(1.12)" },
+        { transform: "scale(1)" },
+      ],
       { duration: 180, easing: "cubic-bezier(.2,.8,.2,1)" },
     );
   }
 
   function deferIdle(fn) {
-    if (typeof requestIdleCallback === "function") requestIdleCallback(fn, { timeout: 48 });
+    if (typeof requestIdleCallback === "function")
+      requestIdleCallback(fn, { timeout: 48 });
     else queueMicrotask(fn);
   }
 
@@ -200,7 +237,9 @@ function boot() {
         save.wrap = !save.wrap;
         persist();
         setChip(el("wrapBtn"), save.wrap);
-        el("detail").textContent = save.wrap ? "Edges wrap around" : "Crash on walls";
+        el("detail").textContent = save.wrap
+          ? "Edges wrap around"
+          : "Crash on walls";
       },
       onSound: () => {
         save.sound = !save.sound;
@@ -272,7 +311,13 @@ function boot() {
       save.reducedMotion = e.target.checked;
       reduced = e.target.checked;
       document.body.classList.toggle("reduce", reduced);
-      renderer.setTheme(save.theme, save.skin, save.trail, save.colorblind, reduced);
+      renderer.setTheme(
+        save.theme,
+        save.skin,
+        save.trail,
+        save.colorblind,
+        reduced,
+      );
       persist();
     });
     el("swSl").addEventListener("input", (e) => {
@@ -281,7 +326,13 @@ function boot() {
     });
     el("cbSel").addEventListener("change", (e) => {
       save.colorblind = e.target.value;
-      renderer.setTheme(save.theme, save.skin, save.trail, save.colorblind, reduced);
+      renderer.setTheme(
+        save.theme,
+        save.skin,
+        save.trail,
+        save.colorblind,
+        reduced,
+      );
       persist();
     });
     const qs = el("qualSel");
@@ -291,20 +342,22 @@ function boot() {
         renderer.setQuality(save.quality);
         persist();
       });
-      const lp = el("leftPadCk");
-      if (lp)
-        lp.addEventListener("change", (e) => {
-          save.leftPad = e.target.checked;
-          document.body.classList.toggle("leftPad", save.leftPad);
-          persist();
-        });
-      const gh = el("ghostCk");
-      if (gh)
-        gh.addEventListener("change", (e) => {
-          save.ghost = e.target.checked;
-          persist();
-        });
-    el("fsBtn").addEventListener("click", () => enterFullscreen(document.documentElement));
+    const lp = el("leftPadCk");
+    if (lp)
+      lp.addEventListener("change", (e) => {
+        save.leftPad = e.target.checked;
+        document.body.classList.toggle("leftPad", save.leftPad);
+        persist();
+      });
+    const gh = el("ghostCk");
+    if (gh)
+      gh.addEventListener("change", (e) => {
+        save.ghost = e.target.checked;
+        persist();
+      });
+    el("fsBtn").addEventListener("click", () =>
+      enterFullscreen(document.documentElement),
+    );
     el("exportBtn").addEventListener("click", () => {
       const blob = new Blob([exportSave(save)], { type: "application/json" });
       const a = document.createElement("a");
@@ -405,8 +458,9 @@ function boot() {
       canvasEd.addEventListener("click", (e) => {
         const r = canvasEd.getBoundingClientRect();
         const s = canvasEd.width / ed.cols;
-        const x = ((e.clientX - r.left) * (canvasEd.width / r.width) / s) | 0;
-        const y = ((e.clientY - r.top) * (canvasEd.height / r.height) / s) | 0;
+        const x = (((e.clientX - r.left) * (canvasEd.width / r.width)) / s) | 0;
+        const y =
+          (((e.clientY - r.top) * (canvasEd.height / r.height)) / s) | 0;
         const k = x + "," + y;
         if (ed.cells.has(k)) ed.cells.delete(k);
         else ed.cells.add(k);
@@ -416,7 +470,9 @@ function boot() {
     if (proc)
       proc.addEventListener("click", () => {
         const raw = (el("procSeed").value || "").trim();
-        const seed = raw ? (parseInt(raw, 16) || parseInt(raw, 10) || 1) : ((Math.random() * 0xffffffff) | 0);
+        const seed = raw
+          ? parseInt(raw, 16) || parseInt(raw, 10) || 1
+          : (Math.random() * 0xffffffff) | 0;
         const m = generateProcMap(seed >>> 0);
         if (!save.customMaps) save.customMaps = [];
         save.customMaps.push(m);
@@ -452,15 +508,17 @@ function boot() {
     const exp = el("edExport");
     if (exp)
       exp.addEventListener("click", () => {
-        const blob = new Blob([JSON.stringify(save.customMaps || [], null, 2)], { type: "application/json" });
+        const blob = new Blob(
+          [JSON.stringify(save.customMaps || [], null, 2)],
+          { type: "application/json" },
+        );
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = "viper-maps.json";
         a.click();
       });
     const imp = el("edImport");
-    if (imp)
-      imp.addEventListener("click", () => el("edFile").click());
+    if (imp) imp.addEventListener("click", () => el("edFile").click());
     const file = el("edFile");
     if (file)
       file.addEventListener("change", async (e) => {
@@ -469,7 +527,9 @@ function boot() {
         try {
           const list = JSON.parse(await f.text());
           if (Array.isArray(list)) {
-            save.customMaps = (save.customMaps || []).concat(list.filter((m) => m && m.id));
+            save.customMaps = (save.customMaps || []).concat(
+              list.filter((m) => m && m.id),
+            );
             applyCustomMaps(save.customMaps);
             persist();
             openMaps();
@@ -486,19 +546,27 @@ function boot() {
       picks
         .map((id) => {
           const p = PERKS.find((x) => x.id === id) || { id, name: id };
-          return '<button class="chip" type="button" data-draft="' + p.id + '">' + p.name + "</button>";
+          return (
+            '<button class="chip" type="button" data-draft="' +
+            p.id +
+            '">' +
+            p.name +
+            "</button>"
+          );
         })
         .join("") +
       "</div></div></div>";
     fillPanel(html);
-    el("panel").querySelectorAll("[data-draft]").forEach((b) => {
-      b.addEventListener("click", (e) => {
-        e.stopPropagation();
-        applyDraft(game, b.dataset.draft);
-        audio.perk();
-        hidePanel();
+    el("panel")
+      .querySelectorAll("[data-draft]")
+      .forEach((b) => {
+        b.addEventListener("click", (e) => {
+          e.stopPropagation();
+          applyDraft(game, b.dataset.draft);
+          audio.perk();
+          hidePanel();
+        });
       });
-    });
   }
 
   function onGarageClick(e) {
@@ -510,7 +578,13 @@ function boot() {
     if (kind === "skin") save.skin = id;
     if (kind === "trail") save.trail = id;
     if (kind === "theme") save.theme = id;
-    renderer.setTheme(save.theme, save.skin, save.trail, save.colorblind, reduced);
+    renderer.setTheme(
+      save.theme,
+      save.skin,
+      save.trail,
+      save.colorblind,
+      reduced,
+    );
     persist();
     openGarage();
   }
@@ -527,7 +601,13 @@ function boot() {
       upgrades: save.upgrades,
     });
     renderer.recycleAll();
-    renderer.setTheme(save.theme, save.skin, save.trail, save.colorblind, reduced);
+    renderer.setTheme(
+      save.theme,
+      save.skin,
+      save.trail,
+      save.colorblind,
+      reduced,
+    );
     screen = "run";
     watching = false;
     replaySpeed = 1;
@@ -538,7 +618,12 @@ function boot() {
     ghostIdx = 0;
     ghostLog = [];
     if (save.ghost !== false) {
-      const gk = save.mode + ":" + save.difficulty + ":" + (save.mode === MODES.DAILY ? "garden" : save.mapId);
+      const gk =
+        save.mode +
+        ":" +
+        save.difficulty +
+        ":" +
+        (save.mode === MODES.DAILY ? "garden" : save.mapId);
       const rec = save.ghosts && save.ghosts[gk];
       if (rec && rec.inputs) {
         ghostRun = createGame({
@@ -622,7 +707,9 @@ function boot() {
 
   function endRun(kind, fromWatch) {
     if (!game) return;
-    const rec = fromWatch ? { gained: 0, cosmetics: [], ach: [], best: false } : recordRun(save, game);
+    const rec = fromWatch
+      ? { gained: 0, cosmetics: [], ach: [], best: false }
+      : recordRun(save, game);
     persist();
     HI.textContent = String(save.best);
     lastReplay = makeReplay(game);
@@ -646,7 +733,11 @@ function boot() {
       score: game.score,
     });
     screen = kind === "win" ? "win" : "over";
-    announce((kind === "win" ? "Board cleared. " : "Game over. ") + "Score " + game.score);
+    announce(
+      (kind === "win" ? "Board cleared. " : "Game over. ") +
+        "Score " +
+        game.score,
+    );
     PAUSE.hidden = true;
     audio.stopMusic();
     stopLoop();
@@ -657,7 +748,9 @@ function boot() {
     share.type = "button";
     share.textContent = "Share";
     share.id = "shareBtn";
-    share.addEventListener("click", () => shareCard(canvas, game.score, save.mode));
+    share.addEventListener("click", () =>
+      shareCard(canvas, game.score, save.mode),
+    );
     el("opts").style.display = "flex";
     el("opts").innerHTML = "";
     el("opts").appendChild(share);
@@ -744,7 +837,8 @@ function boot() {
     }
     if (screen === "pause") resume();
     if (screen === "run" && game) {
-      if (enqueueDir(game, dir, performance.now())) recordInput(game, dir.name, game.tickCount);
+      if (enqueueDir(game, dir, performance.now()))
+        recordInput(game, dir.name, game.tickCount);
     }
   }
 
@@ -804,9 +898,18 @@ function boot() {
       lastTick = tick;
       let steps = 0;
       const cap = watching ? Math.min(8, MAX_STEPS * replaySpeed) : MAX_STEPS;
-      while (acc >= tick && game.alive && screen === "run" && !game.paused && steps < cap) {
+      while (
+        acc >= tick &&
+        game.alive &&
+        screen === "run" &&
+        !game.paused &&
+        steps < cap
+      ) {
         if (watching) {
-          while (replayIdx < replayLog.length && replayLog[replayIdx].t === game.tickCount) {
+          while (
+            replayIdx < replayLog.length &&
+            replayLog[replayIdx].t === game.tickCount
+          ) {
             const d = DIRMAP[replayLog[replayIdx].d];
             if (d) enqueueDir(game, d, 0);
             replayIdx++;
@@ -817,7 +920,10 @@ function boot() {
         steps++;
         handleEvents();
         if (!watching && ghostRun && ghostRun.alive) {
-          while (ghostIdx < ghostLog.length && ghostLog[ghostIdx].t === ghostRun.tickCount) {
+          while (
+            ghostIdx < ghostLog.length &&
+            ghostLog[ghostIdx].t === ghostRun.tickCount
+          ) {
             const d = DIRMAP[ghostLog[ghostIdx].d];
             if (d) enqueueDir(ghostRun, d, 0);
             ghostIdx++;
@@ -839,7 +945,10 @@ function boot() {
     renderer.updateFx(dtEma);
     if (game) {
       const tick = getTickMs(game) || 1;
-      const alpha = screen === "run" && game.alive ? Math.min(1, Math.max(0, acc / tick)) : 1;
+      const alpha =
+        screen === "run" && game.alive
+          ? Math.min(1, Math.max(0, acc / tick))
+          : 1;
       renderer.draw(game, now, alpha, watching ? null : ghostRun);
       const fx = renderer.getFlash();
       FL.style.background = fx.flashCol;
@@ -877,20 +986,34 @@ function boot() {
     document.addEventListener("visibilitychange", onVisibility, sig);
     window.addEventListener("blur", onBlur, sig);
     window.addEventListener("resize", () => renderer.resize(), sig);
-    window.addEventListener("orientationchange", () => later(() => renderer.resize(), 90), sig);
-    if (window.visualViewport) visualViewport.addEventListener("resize", () => renderer.resize(), sig);
+    window.addEventListener(
+      "orientationchange",
+      () => later(() => renderer.resize(), 90),
+      sig,
+    );
+    if (window.visualViewport)
+      visualViewport.addEventListener("resize", () => renderer.resize(), sig);
     if (window.ResizeObserver) {
       try {
-        new ResizeObserver(() => renderer.resize()).observe(canvas.parentElement || canvas);
+        new ResizeObserver(() => renderer.resize()).observe(
+          canvas.parentElement || canvas,
+        );
       } catch (_) {}
     }
     const onReduce = (e) => {
       if (save.reducedMotion == null) {
         reduced = e.matches;
-        renderer.setTheme(save.theme, save.skin, save.trail, save.colorblind, reduced);
+        renderer.setTheme(
+          save.theme,
+          save.skin,
+          save.trail,
+          save.colorblind,
+          reduced,
+        );
       }
     };
-    if (reducedMq.addEventListener) reducedMq.addEventListener("change", onReduce, sig);
+    if (reducedMq.addEventListener)
+      reducedMq.addEventListener("change", onReduce, sig);
     else if (reducedMq.addListener) reducedMq.addListener(onReduce);
     if (navigator.maxTouchPoints > 0) document.body.classList.add("touch");
 
@@ -1000,7 +1123,9 @@ function boot() {
     last = performance.now();
     disarmIdlePad();
     startLoop();
-    announce(speed === 0 ? "Skipping replay" : "Watching replay " + (speed || 1) + "x");
+    announce(
+      speed === 0 ? "Skipping replay" : "Watching replay " + (speed || 1) + "x",
+    );
   }
 
   function paintOnce() {
@@ -1023,7 +1148,9 @@ function boot() {
     getAlpha: () => {
       if (!game) return 1;
       const tick = getTickMs(game) || 1;
-      return screen === "run" && game.alive ? Math.min(1, Math.max(0, acc / tick)) : 1;
+      return screen === "run" && game.alive
+        ? Math.min(1, Math.max(0, acc / tick))
+        : 1;
     },
   };
 }

@@ -13,7 +13,11 @@ function findChrome() {
       if (existsSync(p)) return p;
     }
   }
-  for (const p of ["/usr/bin/google-chrome", "/usr/bin/chromium-browser", "/usr/bin/chromium"]) {
+  for (const p of [
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium-browser",
+    "/usr/bin/chromium",
+  ]) {
     if (existsSync(p)) return p;
   }
   return undefined;
@@ -39,9 +43,20 @@ module.exports = {
         throttlingMethod: "provided",
         chromePath,
         chromeFlags: chromeArgs.join(" "),
-        skipAudits: ["uses-http2", "total-blocking-time", "interactive", "bf-cache"],
+        skipAudits: [
+          "uses-http2",
+          "total-blocking-time",
+          "interactive",
+          "bf-cache",
+        ],
         plugins: ["lighthouse-plugin-pwa"],
-        onlyCategories: ["performance", "accessibility", "best-practices", "seo", "lighthouse-plugin-pwa"],
+        onlyCategories: [
+          "performance",
+          "accessibility",
+          "best-practices",
+          "seo",
+          "lighthouse-plugin-pwa",
+        ],
       },
     },
     assert: {

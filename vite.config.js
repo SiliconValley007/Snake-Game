@@ -35,9 +35,18 @@ function ogPlugin() {
         if (!base) return html;
         const img = base + "icons/og-card.png";
         return html
-          .replace(/property="og:url" content="[^"]*"/, 'property="og:url" content="' + base + '"')
-          .replace(/property="og:image" content="[^"]*"/, 'property="og:image" content="' + img + '"')
-          .replace(/name="twitter:image" content="[^"]*"/, 'name="twitter:image" content="' + img + '"');
+          .replace(
+            /property="og:url" content="[^"]*"/,
+            'property="og:url" content="' + base + '"',
+          )
+          .replace(
+            /property="og:image" content="[^"]*"/,
+            'property="og:image" content="' + img + '"',
+          )
+          .replace(
+            /name="twitter:image" content="[^"]*"/,
+            'name="twitter:image" content="' + img + '"',
+          );
       },
     },
   };

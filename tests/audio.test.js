@@ -84,7 +84,12 @@ class MockAC {
     return n;
   }
   createBuffer(ch, len, rate) {
-    return { ch, length: len, sampleRate: rate, getChannelData: () => new Float32Array(len) };
+    return {
+      ch,
+      length: len,
+      sampleRate: rate,
+      getChannelData: () => new Float32Array(len),
+    };
   }
   createBufferSource() {
     const n = new BufferSource(this);
@@ -128,12 +133,17 @@ describe("event stingers", () => {
     a.ensure();
     const duck = ac.created[1];
     const oscBefore = ac.created.filter((n) => n.kind === "osc").length;
-    for (const k of ["eat", "gold", "power", "level", "perk", "die", "win"]) a.sting(k);
+    for (const k of ["eat", "gold", "power", "level", "perk", "die", "win"])
+      a.sting(k);
     const oscs = ac.created.filter((n) => n.kind === "osc");
     expect(oscs.length).toBeGreaterThan(oscBefore);
-    const duckSets = duck.gain.calls.filter((c) => c[0] === "set" && c[1] === 0.3);
+    const duckSets = duck.gain.calls.filter(
+      (c) => c[0] === "set" && c[1] === 0.3,
+    );
     expect(duckSets.length).toBeGreaterThan(0);
-    const restored = duck.gain.calls.filter((c) => c[0] === "lin" && c[1] === 1);
+    const restored = duck.gain.calls.filter(
+      (c) => c[0] === "lin" && c[1] === 1,
+    );
     expect(restored.length).toBe(duckSets.length);
     for (const o of oscs) {
       expect(o.connected.length).toBeGreaterThan(0);

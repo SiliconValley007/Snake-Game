@@ -43,7 +43,8 @@ function occupiedSet(state) {
   for (const p of state.snake) occSet.add(ck(p.x, p.y));
   for (const o of state.obstacles) occSet.add(ck(o.x, o.y));
   for (const w of state.movingWalls) {
-    for (let i = 0; i < w.len; i++) occSet.add(ck(w.x + w.dx * i, w.y + w.dy * i));
+    for (let i = 0; i < w.len; i++)
+      occSet.add(ck(w.x + w.dx * i, w.y + w.dy * i));
   }
   if (state.food) occSet.add(ck(state.food.x, state.food.y));
   for (const p of state.powerups) occSet.add(ck(p.x, p.y));
@@ -194,7 +195,9 @@ function magnetPull(state) {
   const nx = f.x + (state.tickCount % 2 === 0 ? dx : 0);
   const ny = f.y + (state.tickCount % 2 === 1 ? dy : 0);
   if (inBounds(state, nx, ny) && !isObstacle(state, nx, ny)) {
-    const hitSnake = state.snake.some((p, i) => i > 0 && p.x === nx && p.y === ny);
+    const hitSnake = state.snake.some(
+      (p, i) => i > 0 && p.x === nx && p.y === ny,
+    );
     if (!hitSnake) {
       f.x = nx;
       f.y = ny;
@@ -245,7 +248,7 @@ export function createGame(opts = {}) {
   const mode = opts.mode || MODES.CLASSIC;
   const difficulty = opts.difficulty || DIFFICULTY.NORMAL;
   const map = opts.map || getMap(opts.mapId || "arena");
-  const seed = (opts.seed >>> 0) || 1;
+  const seed = opts.seed >>> 0 || 1;
   const rng = mulberry32(seed);
   const built = buildOccupancy(map);
   const wrapOn = opts.wrapOn != null ? !!opts.wrapOn : map.wrapDefault;
@@ -330,7 +333,8 @@ function applyPerk(state, perk) {
     state.snake.push({ x: h.x - 1, y: h.y }, { x: h.x - 2, y: h.y });
     snapshotSnake(state);
   }
-  if (perk === "swift") state.tickMs = Math.max(state.minTick, state.tickMs - 18);
+  if (perk === "swift")
+    state.tickMs = Math.max(state.minTick, state.tickMs - 18);
   if (perk === "magnet") state.active[POWER.MAGNET] = 24;
   if (perk === "ghost") state.active[POWER.GHOST] = 16;
 }
@@ -360,10 +364,17 @@ export function snapshotSnake(state) {
 
 export function enqueueDir(state, dir, now = 0) {
   if (!dir || !state.alive) return false;
-  const last = state.queued.length ? state.queued[state.queued.length - 1] : state.dir;
+  const last = state.queued.length
+    ? state.queued[state.queued.length - 1]
+    : state.dir;
   if (same(last, dir)) return false;
   if (opp(last, dir)) {
-    if (now && now <= state.graceUntil && state.graceDir && !opp(state.graceDir, dir)) {
+    if (
+      now &&
+      now <= state.graceUntil &&
+      state.graceDir &&
+      !opp(state.graceDir, dir)
+    ) {
       /* allow grace reverse-buffer as perpendicular vs previous */
     } else {
       return false;
@@ -383,7 +394,8 @@ export function recordInput(state, dirName, tick) {
 }
 
 function scoreFor(state, foodType) {
-  const base = foodType === FOOD.GOLD ? 35 : foodType === FOOD.POISON ? -20 : 10;
+  const base =
+    foodType === FOOD.GOLD ? 35 : foodType === FOOD.POISON ? -20 : 10;
   const comboAdd = state.combo > 1 ? (state.combo - 1) * 5 : 0;
   let n = base + (base > 0 ? comboAdd : 0);
   if (state.active[POWER.X2] > 0 && n > 0) n *= 2;
@@ -410,7 +422,8 @@ function tryEat(state, hx, hy) {
     return "poison";
   }
   const wasGold = f.type === FOOD.GOLD;
-  const comboWin = COMBO_TICKS + ((state.upgrades && state.upgrades.combo) ? 4 : 0);
+  const comboWin =
+    COMBO_TICKS + (state.upgrades && state.upgrades.combo ? 4 : 0);
   const fast = state.tickCount - state.lastEatTick <= comboWin;
   state.combo = fast ? state.combo + 1 : 1;
   if (state.combo > state.maxCombo) state.maxCombo = state.combo;
@@ -418,7 +431,10 @@ function tryEat(state, hx, hy) {
   state.score += add;
   state.lastEatTick = state.tickCount;
   state.foodsEaten++;
-  state.tickMs = Math.max(state.minTick, state.tickMs - (wasGold ? state.diff.accel + 2.4 : state.diff.accel));
+  state.tickMs = Math.max(
+    state.minTick,
+    state.tickMs - (wasGold ? state.diff.accel + 2.4 : state.diff.accel),
+  );
   state.events.push({
     type: "eat",
     gold: wasGold,
@@ -458,7 +474,14 @@ function advanceLevel(state) {
   state.levelTarget = 8 + state.level * 2;
   state.score += ENDLESS_CLEAR_BONUS;
   state.tickMs = Math.max(state.minTick, state.tickMs - 4);
-  const mapCycle = ["arena", "garden", "fortress", "rivers", "voidgate", "colossus"];
+  const mapCycle = [
+    "arena",
+    "garden",
+    "fortress",
+    "rivers",
+    "voidgate",
+    "colossus",
+  ];
   const nextId = mapCycle[(state.level - 1) % mapCycle.length];
   const map = getMap(nextId);
   state.mapId = map.id;
@@ -480,7 +503,9 @@ function advanceLevel(state) {
   state.queued.length = 0;
   state.powerups.length = 0;
   spawnFood(state);
-  const pool = ["hardy", "swift", "magnet", "lucky", "ghost"].filter((p) => p !== state.perk);
+  const pool = ["hardy", "swift", "magnet", "lucky", "ghost"].filter(
+    (p) => p !== state.perk,
+  );
   const picks = [];
   for (let i = 0; i < 3 && pool.length; i++) {
     const j = (state.rng() * pool.length) | 0;
@@ -548,7 +573,11 @@ export function step(state, now = 0) {
   }
 
   const ghost = state.active[POWER.GHOST] > 0;
-  const growingFood = state.food && state.food.x === hx && state.food.y === hy && state.food.type !== FOOD.POISON;
+  const growingFood =
+    state.food &&
+    state.food.x === hx &&
+    state.food.y === hy &&
+    state.food.type !== FOOD.POISON;
 
   if (isObstacle(state, hx, hy) && !ghost) {
     if (tryGrace(state, now)) return step(state, 0);
@@ -589,7 +618,8 @@ export function step(state, now = 0) {
       const f = state.food;
       if (old && Math.abs(old.x - f.x) + Math.abs(old.y - f.y) === 1) {
         const h = state.snake[0];
-        if (Math.abs(h.x - f.x) + Math.abs(h.y - f.y) > 1) state.poisonIgnored++;
+        if (Math.abs(h.x - f.x) + Math.abs(h.y - f.y) > 1)
+          state.poisonIgnored++;
       }
     }
   } else {
